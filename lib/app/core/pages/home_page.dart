@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:vaga_supabase/app/core/pages/auth/controllers/login_controller.dart';
+import 'package:vaga_supabase/app/features/servidores/chart_servidores_page.dart';
+import 'package:vaga_supabase/app/features/servidores/get_servidores_page.dart';
 
 class HomePage extends StatefulWidget {
   static const String name = 'home-page';
@@ -16,8 +18,8 @@ class _HomePageState extends State<HomePage> {
   late final LoginController _loginController;
   int currentIndex = 0;
   List<Widget> pages = [
-    Placeholder(),
-    Placeholder(),
+    GetServidoresPage(),
+    ChartServidoresPage(),
     Placeholder(),
   ];
 

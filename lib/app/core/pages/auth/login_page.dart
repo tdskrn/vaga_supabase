@@ -97,10 +97,15 @@ class _LoginPageState extends State<LoginPage> {
                         try {
                           EasyLoading.show(status: 'Fazendo Login...');
                           print('antes do login');
-                          _loginController.signIn(
-                              _emailController.text, _passwordController.text);
+                          _loginController
+                              .signIn(_emailController.text,
+                                  _passwordController.text)
+                              .whenComplete(
+                            () {
+                              context.go('/home-page');
+                            },
+                          );
 
-                          context.go('/home-page');
                           EasyLoading.dismiss();
                         } catch (error) {
                           EasyLoading.dismiss();
