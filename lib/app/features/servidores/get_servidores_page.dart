@@ -88,6 +88,9 @@ class _GetServidoresPageState extends State<GetServidoresPage> {
                   flex: 3,
                   child: TextFormField(
                     controller: _searchController,
+                    onFieldSubmitted: (value) {
+                      _performSearch();
+                    },
                     decoration: const InputDecoration(
                       hintText: 'Pesquise por nome',
                       border: OutlineInputBorder(),
