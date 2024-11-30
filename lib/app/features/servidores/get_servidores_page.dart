@@ -58,7 +58,8 @@ class _GetServidoresPageState extends State<GetServidoresPage> {
     }
 
     try {
-      final response = await query;
+      final response =
+          await query.order('nome_servidor', ascending: true).limit(50);
       // ignore: unnecessary_null_comparison, unnecessary_type_check
       if (response != null && response is List) {
         return response.cast<Map<String, dynamic>>();

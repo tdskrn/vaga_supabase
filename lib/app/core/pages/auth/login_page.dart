@@ -43,80 +43,84 @@ class _LoginPageState extends State<LoginPage> {
           ),
           child: Form(
             key: formKey,
-            child: Column(
-              children: [
-                Text(
-                  "Email",
-                  style: TextStyle(color: Color(0xFF707070), fontSize: 18),
-                ),
-                TextFormField(
-                  controller: _emailController,
-                  validator: validateEmail,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: "exemplo@email.com",
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF707070)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF707070)),
+            child: AutofillGroup(
+              child: Column(
+                children: [
+                  Text(
+                    "Email",
+                    style: TextStyle(color: Color(0xFF707070), fontSize: 18),
+                  ),
+                  TextFormField(
+                    controller: _emailController,
+                    validator: validateEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: [AutofillHints.email],
+                    decoration: InputDecoration(
+                      hintText: "exemplo@email.com",
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF707070)),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF707070)),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  "Senha",
-                  style: TextStyle(color: Color(0xFF707070), fontSize: 18),
-                ),
-                TextFormField(
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Insira algum texto';
-                    }
-                    if (value.length < 6) {
-                      return "Senha muito curta";
-                    }
-                    return null;
-                  },
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "********",
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF707070)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF707070)),
-                    ),
+                  SizedBox(height: 20),
+                  Text(
+                    "Senha",
+                    style: TextStyle(color: Color(0xFF707070), fontSize: 18),
                   ),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                    onPressed: () async {
-                      if (formKey.currentState!.validate()) {
-                        try {
-                          EasyLoading.show(status: 'Fazendo Login...');
-                          print('antes do login');
-                          _loginController
-                              .signIn(_emailController.text,
-                                  _passwordController.text)
-                              .whenComplete(
-                            () {
-                              context.go('/home-page');
-                            },
-                          );
-
-                          EasyLoading.dismiss();
-                        } catch (error) {
-                          EasyLoading.dismiss();
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(error.toString()),
-                          ));
-                        }
+                  TextFormField(
+                    controller: _passwordController,
+                    autofillHints: [AutofillHints.password],
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Insira algum texto';
                       }
+                      if (value.length < 6) {
+                        return "Senha muito curta";
+                      }
+                      return null;
                     },
-                    child: Text('ENTRAR'))
-              ],
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText: "********",
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF707070)),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF707070)),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          try {
+                            EasyLoading.show(status: 'Fazendo Login...');
+                            print('antes do login');
+                            _loginController
+                                .signIn(_emailController.text,
+                                    _passwordController.text)
+                                .whenComplete(
+                              () {
+                                context.go('/home-page');
+                              },
+                            );
+
+                            EasyLoading.dismiss();
+                          } catch (error) {
+                            EasyLoading.dismiss();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(error.toString()),
+                            ));
+                          }
+                        }
+                      },
+                      child: Text('ENTRAR'))
+                ],
+              ),
             ),
           ),
         ),
