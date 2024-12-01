@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vaga_supabase/app/core/router/app_router.dart';
 
 Widget _highlightedText(String title, String content, Color color) {
   return Padding(
@@ -63,26 +64,32 @@ class ServidorDetail extends StatefulWidget {
 
 class _ServidorDetailState extends State<ServidorDetail> {
   late final TextEditingController nomeController;
-  late final TextEditingController cargoController;
+  late final TextEditingController servidor2025Controller;
   late final TextEditingController secretariaController;
   late final TextEditingController lotacaoController;
+  late final TextEditingController cargoController;
   late final TextEditingController vinculoController;
   late final TextEditingController situacaoAtualController;
-
+  // referentes a benefícios
   late final TextEditingController salarioBaseController;
   late final TextEditingController gratificacaoController;
-  late final TextEditingController horasExtrasController;
+  late final TextEditingController porcentagemGratificacaoController;
+  late final TextEditingController quantHorasExtrasController;
   late final TextEditingController valorHorasController;
   late final TextEditingController totalHorasController;
   late final TextEditingController quantQuinqueniosController;
-  late final TextEditingController quinqueniosController;
+  late final TextEditingController valorQuinqueniosController;
   late final TextEditingController adicionalNoturnoController;
-  late final TextEditingController complEnfermagemController;
   late final TextEditingController insalPericulosidadeController;
+  late final TextEditingController complEnfermagemController;
+  late final TextEditingController salarioFamiliaController;
 
   late final TextEditingController inssController;
   late final TextEditingController impostoRendaController;
-  late final TextEditingController descontosTotaisController;
+  late final TextEditingController sindServPublicosController;
+  late final TextEditingController totalBrutoController;
+  late final TextEditingController totalDescontosController;
+  late final TextEditingController totalLiquidoController;
 
   @override
   void initState() {
@@ -90,10 +97,14 @@ class _ServidorDetailState extends State<ServidorDetail> {
 
     // Inicializando os controladores com os valores do widget.data
     nomeController = TextEditingController(text: widget.data['nome_servidor']);
-    cargoController = TextEditingController(text: widget.data['cargo']);
+    servidor2025Controller = TextEditingController(
+        text: (widget.data['servidor_2025'] ?? "SEM NOME"));
     secretariaController =
         TextEditingController(text: widget.data['secretaria']);
+
     lotacaoController = TextEditingController(text: widget.data['lotacao']);
+    cargoController = TextEditingController(text: widget.data['cargo']);
+
     vinculoController = TextEditingController(text: widget.data['vinculo']);
     situacaoAtualController =
         TextEditingController(text: widget.data['situacao_atual']);
@@ -102,45 +113,73 @@ class _ServidorDetailState extends State<ServidorDetail> {
         text: (widget.data['salario_base'] ?? '').toString());
     gratificacaoController = TextEditingController(
         text: (widget.data['valor_gratificacao'] ?? '').toString());
-    horasExtrasController = TextEditingController(
+    porcentagemGratificacaoController = TextEditingController(
+        text: (widget.data['porcentagem_gratificacao'] ?? ''));
+    quantHorasExtrasController = TextEditingController(
         text: (widget.data['quant_hora_extra'] ?? '').toString());
     valorHorasController = TextEditingController(
         text: (widget.data['valor_hora_extra'] ?? '').toString());
-    quinqueniosController = TextEditingController(
-        text: (widget.data['quant_quinquenios'] ?? '').toString());
+    totalHorasController = TextEditingController(
+        text: (widget.data['total_horas'] ?? '').toString());
     quantQuinqueniosController = TextEditingController(
-        text: (widget.data['valor_quinquenions'] ?? '').toString());
+        text: (widget.data['quant_quinquenios'] ?? '').toString());
+    valorQuinqueniosController = TextEditingController(
+        text: (widget.data['valor_quinquenios'] ?? '').toString());
     adicionalNoturnoController = TextEditingController(
         text: (widget.data['adic_noturno'] ?? '').toString());
+    insalPericulosidadeController = TextEditingController(
+        text: (widget.data['insal_periculosidade'] ?? '').toString());
+
+    complEnfermagemController = TextEditingController(
+        text: (widget.data['compl_enfermagem'] ?? '').toString());
+    salarioFamiliaController = TextEditingController(
+        text: (widget.data['salario_familia'] ?? '').toString());
 
     inssController =
         TextEditingController(text: (widget.data['inss'] ?? '').toString());
     impostoRendaController = TextEditingController(
         text: (widget.data['imposto_renda'] ?? '').toString());
-    descontosTotaisController = TextEditingController(
+    sindServPublicosController = TextEditingController(
+        text: (widget.data['sind_serv_publicos'] ?? '').toString());
+    totalBrutoController = TextEditingController(
+        text: (widget.data['total_bruto'] ?? '').toString());
+    totalDescontosController = TextEditingController(
         text: (widget.data['total_descontos'] ?? '').toString());
+    totalLiquidoController = TextEditingController(
+        text: (widget.data['total_liquido'] ?? '').toString());
   }
 
   @override
   void dispose() {
     // Limpando os controladores ao finalizar
     nomeController.dispose();
-    cargoController.dispose();
+    servidor2025Controller.dispose();
     secretariaController.dispose();
     lotacaoController.dispose();
+    cargoController.dispose();
     vinculoController.dispose();
     situacaoAtualController.dispose();
 
     salarioBaseController.dispose();
     gratificacaoController.dispose();
-    horasExtrasController.dispose();
+    porcentagemGratificacaoController.dispose();
+    quantHorasExtrasController.dispose();
     valorHorasController.dispose();
-    quinqueniosController.dispose();
+    totalHorasController.dispose();
+    quantQuinqueniosController.dispose();
+    valorQuinqueniosController.dispose();
     adicionalNoturnoController.dispose();
+    insalPericulosidadeController.dispose();
+    complEnfermagemController.dispose();
+    salarioFamiliaController.dispose();
 
     inssController.dispose();
     impostoRendaController.dispose();
-    descontosTotaisController.dispose();
+    sindServPublicosController.dispose();
+    totalBrutoController.dispose();
+    totalDescontosController.dispose();
+    totalLiquidoController.dispose();
+
     super.dispose();
   }
 
@@ -157,6 +196,10 @@ class _ServidorDetailState extends State<ServidorDetail> {
                 TextFormField(
                   controller: nomeController,
                   decoration: InputDecoration(labelText: 'Nome do Servidor'),
+                ),
+                TextFormField(
+                  controller: servidor2025Controller,
+                  decoration: InputDecoration(labelText: 'Servidor 2025'),
                 ),
                 TextFormField(
                   controller: cargoController,
@@ -182,26 +225,58 @@ class _ServidorDetailState extends State<ServidorDetail> {
                 TextFormField(
                   controller: salarioBaseController,
                   decoration: InputDecoration(labelText: 'Salário Base'),
+                  onChanged: (value) {
+                    salarioBaseController.text = value;
+                  },
                 ),
                 TextFormField(
                   controller: gratificacaoController,
                   decoration: InputDecoration(labelText: 'Gratificação'),
                 ),
                 TextFormField(
-                  controller: horasExtrasController,
-                  decoration: InputDecoration(labelText: 'Horas Extras'),
+                  controller: porcentagemGratificacaoController,
+                  decoration:
+                      InputDecoration(labelText: 'Porcentagem Gratificação'),
+                ),
+                TextFormField(
+                  controller: quantHorasExtrasController,
+                  decoration:
+                      InputDecoration(labelText: 'Quantidade Horas Extras'),
                 ),
                 TextFormField(
                   controller: valorHorasController,
                   decoration: InputDecoration(labelText: 'Valor Hora Extra'),
                 ),
                 TextFormField(
-                  controller: quinqueniosController,
-                  decoration: InputDecoration(labelText: 'Quinquênios'),
+                  controller: totalHorasController,
+                  decoration: InputDecoration(labelText: 'Total Horas'),
+                ),
+                TextFormField(
+                  controller: quantQuinqueniosController,
+                  decoration:
+                      InputDecoration(labelText: 'Quantidade Quinquênios'),
+                ),
+                TextFormField(
+                  controller: valorQuinqueniosController,
+                  decoration: InputDecoration(labelText: 'Valor Quinquênios'),
                 ),
                 TextFormField(
                   controller: adicionalNoturnoController,
                   decoration: InputDecoration(labelText: 'Adicional Noturno'),
+                ),
+                TextFormField(
+                  controller: insalPericulosidadeController,
+                  decoration: InputDecoration(
+                      labelText: 'Insalubridade/Periculosidade'),
+                ),
+                TextFormField(
+                  controller: complEnfermagemController,
+                  decoration:
+                      InputDecoration(labelText: 'Complemento de Enfermagem'),
+                ),
+                TextFormField(
+                  controller: salarioFamiliaController,
+                  decoration: InputDecoration(labelText: 'Salário Família'),
                 ),
                 Divider(),
                 TextFormField(
@@ -213,8 +288,22 @@ class _ServidorDetailState extends State<ServidorDetail> {
                   decoration: InputDecoration(labelText: 'Imposto de Renda'),
                 ),
                 TextFormField(
-                  controller: descontosTotaisController,
-                  decoration: InputDecoration(labelText: 'Descontos Totais'),
+                  controller: sindServPublicosController,
+                  decoration: InputDecoration(
+                      labelText: 'Sindicato dos Servidores Públicos'),
+                ),
+                Divider(),
+                TextFormField(
+                  controller: totalBrutoController,
+                  decoration: InputDecoration(labelText: 'Total Bruto'),
+                ),
+                TextFormField(
+                  controller: totalDescontosController,
+                  decoration: InputDecoration(labelText: 'Total de Descontos'),
+                ),
+                TextFormField(
+                  controller: totalLiquidoController,
+                  decoration: InputDecoration(labelText: 'Total Líquido'),
                 ),
               ],
             ),
@@ -227,7 +316,127 @@ class _ServidorDetailState extends State<ServidorDetail> {
               child: Text('Cancelar'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  // Construir dinamicamente o mapa de atualização
+                  final Map<String, dynamic> dataToUpdate = {};
+
+                  // Adicionar valors ao mapa apenas se não estiverem vazios ou nulos
+                  if (nomeController.text.isNotEmpty) {
+                    dataToUpdate['nome_servidor'] = nomeController.text;
+                  }
+                  if (servidor2025Controller.text.isNotEmpty) {
+                    dataToUpdate['servidor_2025'] = servidor2025Controller.text;
+                  }
+                  if (secretariaController.text.isNotEmpty) {
+                    dataToUpdate['secretaria'] = secretariaController.text;
+                  }
+                  if (lotacaoController.text.isNotEmpty) {
+                    dataToUpdate['lotacao'] = lotacaoController.text;
+                  }
+                  if (cargoController.text.isNotEmpty) {
+                    dataToUpdate['cargo'] = cargoController.text;
+                  }
+                  if (vinculoController.text.isNotEmpty) {
+                    dataToUpdate['vinculo'] = vinculoController.text;
+                  }
+                  if (situacaoAtualController.text.isNotEmpty) {
+                    dataToUpdate['situacao_atual'] =
+                        situacaoAtualController.text;
+                  }
+
+                  if (porcentagemGratificacaoController.text.isNotEmpty) {
+                    dataToUpdate['porcentagem_gratificacao'] =
+                        porcentagemGratificacaoController.text;
+                  }
+
+                  // Converter campos numéricos somente se houver valores válidos
+                  if (salarioBaseController.text.isNotEmpty) {
+                    dataToUpdate['salario_base'] =
+                        double.tryParse(salarioBaseController.text);
+                  }
+                  if (gratificacaoController.text.isNotEmpty) {
+                    dataToUpdate['valor_gratificacao'] =
+                        double.tryParse(gratificacaoController.text);
+                  }
+
+                  if (quantHorasExtrasController.text.isNotEmpty) {
+                    dataToUpdate['quant_hora_extra'] =
+                        double.tryParse(quantHorasExtrasController.text);
+                  }
+                  if (valorHorasController.text.isNotEmpty) {
+                    dataToUpdate['valor_hora_extra'] =
+                        double.tryParse(valorHorasController.text);
+                  }
+                  if (totalHorasController.text.isNotEmpty) {
+                    dataToUpdate['total_horas'] =
+                        double.tryParse(totalHorasController.text);
+                  }
+                  if (quantQuinqueniosController.text.isNotEmpty) {
+                    dataToUpdate['quant_quinquenios'] =
+                        int.tryParse(quantQuinqueniosController.text);
+                  }
+                  if (valorQuinqueniosController.text.isNotEmpty) {
+                    dataToUpdate['valor_quinquenios'] =
+                        double.tryParse(valorQuinqueniosController.text);
+                  }
+                  if (adicionalNoturnoController.text.isNotEmpty) {
+                    dataToUpdate['adic_noturno'] =
+                        double.tryParse(adicionalNoturnoController.text);
+                  }
+                  if (insalPericulosidadeController.text.isNotEmpty) {
+                    dataToUpdate['insal_periculosidade'] =
+                        double.tryParse(insalPericulosidadeController.text);
+                  }
+                  if (complEnfermagemController.text.isNotEmpty) {
+                    dataToUpdate['compl_enfermagem'] =
+                        double.tryParse(complEnfermagemController.text);
+                  }
+                  if (salarioFamiliaController.text.isNotEmpty) {
+                    dataToUpdate['salario_familia'] =
+                        double.tryParse(salarioFamiliaController.text);
+                  }
+                  if (inssController.text.isNotEmpty) {
+                    dataToUpdate['inss'] = double.tryParse(inssController.text);
+                  }
+                  if (impostoRendaController.text.isNotEmpty) {
+                    dataToUpdate['imposto_renda'] =
+                        double.tryParse(impostoRendaController.text);
+                  }
+                  if (sindServPublicosController.text.isNotEmpty) {
+                    dataToUpdate['sind_serv_publicos'] =
+                        double.tryParse(sindServPublicosController.text);
+                  }
+                  if (totalBrutoController.text.isNotEmpty) {
+                    dataToUpdate['total_bruto'] =
+                        double.tryParse(totalBrutoController.text);
+                  }
+                  if (totalDescontosController.text.isNotEmpty) {
+                    dataToUpdate['total_descontos'] =
+                        double.tryParse(totalDescontosController.text);
+                  }
+                  if (totalLiquidoController.text.isNotEmpty) {
+                    dataToUpdate['total_liquido'] =
+                        double.tryParse(totalLiquidoController.text);
+                  }
+
+                  if (dataToUpdate.isNotEmpty) {
+                    await supabase
+                        .from('vagas')
+                        .update(dataToUpdate)
+                        .eq('id', widget.data['id']);
+                    print('dados salvos com sucesso');
+                  } else {
+                    print("Nenhum dado foi alterado");
+                  }
+                } catch (e) {
+                  print(e);
+                }
+                await supabase
+                    .from('vagas')
+                    .select()
+                    .eq('id', widget.data['id']);
+
                 // Aqui você pode manipular os dados editados
                 print('Dados salvos');
                 Navigator.pop(context);
