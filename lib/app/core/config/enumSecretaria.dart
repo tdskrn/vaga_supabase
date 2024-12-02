@@ -21,7 +21,7 @@ extension SecretariaExtension on Secretaria {
       case Secretaria.agricultura:
         return "AGRICULTURA";
       case Secretaria.assistencia_social:
-        return "ASSISTÊNCIA SOCIAL";
+        return "ASSISTENCIA SOCIAL";
       case Secretaria.conselho_tutelar:
         return "CONSELHO TUTELAR";
       case Secretaria.creche:
@@ -53,7 +53,7 @@ extension SecretariaExtension on Secretaria {
     switch (value?.toUpperCase()) {
       case "AGRICULTURA":
         return Secretaria.agricultura;
-      case "ASSISTÊNCIA SOCIAL":
+      case "ASSISTENCIA SOCIAL":
         return Secretaria.assistencia_social;
       case "CONSELHO TUTELAR":
         return Secretaria.conselho_tutelar;
