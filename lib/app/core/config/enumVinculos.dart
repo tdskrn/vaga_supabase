@@ -6,7 +6,7 @@ enum Vinculo {
   comissionado_efetivo,
   conselheiro_tutelar,
   contratado,
-  efetivo
+  efetivo,
 }
 
 extension VinculoExtension on Vinculo {
@@ -28,6 +28,29 @@ extension VinculoExtension on Vinculo {
         return "CONTRATADO";
       case Vinculo.efetivo:
         return "EFETIVO";
+    }
+  }
+
+  static Vinculo? fromString(String? value) {
+    switch (value?.toUpperCase()) {
+      case "AGENTES POLÍTICOS PREFEITO":
+        return Vinculo.agentes_politico_prefeito;
+      case "AGENTES POLÍTICOS SECRETÁRIOS":
+        return Vinculo.agentes_politico_secretarios;
+      case "AGENTES POLÍTICOS VICE PREFEITO":
+        return Vinculo.agentes_politicos_vice;
+      case "COMISSIONADO":
+        return Vinculo.comissionado;
+      case "COMISSIONADO EFETIVO":
+        return Vinculo.comissionado_efetivo;
+      case "CONSELHEIRO TUTELAR":
+        return Vinculo.conselheiro_tutelar;
+      case "CONTRATADO":
+        return Vinculo.contratado;
+      case "EFETIVO":
+        return Vinculo.efetivo;
+      default:
+        return null;
     }
   }
 }

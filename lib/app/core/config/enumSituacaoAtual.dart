@@ -15,4 +15,17 @@ extension SituacaoAtualExtension on SituacaoAtual {
         return 'AFASTADO';
     }
   }
+
+  static SituacaoAtual? fromString(String? value) {
+    switch (value?.toUpperCase()) {
+      case "ATIVO":
+        return SituacaoAtual.ativo;
+      case "DESLIGADO":
+        return SituacaoAtual.desligado;
+      case "AFASTADO":
+        return SituacaoAtual.afastado;
+      default:
+        return null;
+    }
+  }
 }

@@ -12,7 +12,7 @@ enum Secretaria {
   meio_ambiente,
   obras,
   saude,
-  transporte
+  transporte,
 }
 
 extension SecretariaExtension on Secretaria {
@@ -21,7 +21,7 @@ extension SecretariaExtension on Secretaria {
       case Secretaria.agricultura:
         return "AGRICULTURA";
       case Secretaria.assistencia_social:
-        return "ASSISTENCIA SOCIAL";
+        return "ASSISTÊNCIA SOCIAL";
       case Secretaria.conselho_tutelar:
         return "CONSELHO TUTELAR";
       case Secretaria.creche:
@@ -46,6 +46,41 @@ extension SecretariaExtension on Secretaria {
         return "SAÚDE";
       case Secretaria.transporte:
         return "TRANSPORTE";
+    }
+  }
+
+  static Secretaria? fromString(String? value) {
+    switch (value?.toUpperCase()) {
+      case "AGRICULTURA":
+        return Secretaria.agricultura;
+      case "ASSISTÊNCIA SOCIAL":
+        return Secretaria.assistencia_social;
+      case "CONSELHO TUTELAR":
+        return Secretaria.conselho_tutelar;
+      case "CRECHE":
+        return Secretaria.creche;
+      case "CULTURA":
+        return Secretaria.cultura;
+      case "DEFESA CIVIL":
+        return Secretaria.defesa_civil;
+      case "EDUCAÇÃO":
+        return Secretaria.educacao;
+      case "ESPORTE":
+        return Secretaria.esporte;
+      case "GOVERNO":
+        return Secretaria.governo;
+      case "JURÍDICO":
+        return Secretaria.juridico;
+      case "MEIO AMBIENTE":
+        return Secretaria.meio_ambiente;
+      case "OBRAS":
+        return Secretaria.obras;
+      case "SAÚDE":
+        return Secretaria.saude;
+      case "TRANSPORTE":
+        return Secretaria.transporte;
+      default:
+        return null;
     }
   }
 }
