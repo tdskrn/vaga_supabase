@@ -172,6 +172,19 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
               child: const Text('Resetar Filtros'),
             ),
           ),
+          Row(
+            children: [
+              RowComponent('NOME SERVIDOR', 3, Colors.blue,
+                  textColor: Colors.white),
+              RowComponent('SERVIDOR 2025', 3, Colors.blue,
+                  textColor: Colors.white),
+              RowComponent('CARGO', 3, Colors.blue, textColor: Colors.white),
+              RowComponent('SECRETARIA', 3, Colors.blue,
+                  textColor: Colors.white),
+              RowComponent('VINCULO', 3, Colors.blue, textColor: Colors.white),
+              RowComponent('AÇÕES', 1, Colors.blue, textColor: Colors.white),
+            ],
+          ),
           Expanded(
             child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: getFilteredStream(),
