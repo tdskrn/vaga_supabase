@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:syncfusion_flutter_datagrid_export/export.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:universal_html/html.dart';
 
 import 'package:vaga_supabase/app/core/config/enumSecretaria.dart';
 import 'package:vaga_supabase/app/core/config/enumSituacaoAtual.dart';
@@ -49,6 +55,11 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
       return total; // Soma o salário bruto de cada servidor
     });
   }
+
+  TextStyle _estiloTextos = TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  );
 
   String formatCurrency(double value) {
     final currencyFormat = NumberFormat.simpleCurrency(locale: 'pt_BR');
@@ -194,40 +205,94 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
               ],
             ),
             Divider(),
+            ElevatedButton(
+              onPressed: () async {
+                String currentDate =
+                    'DATA: ' + DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+                PdfDocument document = key.currentState!.exportToPdfDocument(
+                    canRepeatHeaders: false,
+                    fitAllColumnsInOnePage: true,
+                    cellExport: (details) {
+                      if (details.cellType == DataGridExportCellType.row &&
+                          details.columnName == "servidor_2025") {
+                        if (details.cellValue == "" &&
+                            details.cellValue == null &&
+                            details.cellValue == "sem nome" &&
+                            details.cellValue == "SEM NOME") {
+                          details.pdfCell.value = " ";
+                        }
+                      }
+                    });
+                List<int> bytes = await document.save();
+                AnchorElement(
+                    href:
+                        "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
+                  ..setAttribute("download", "relatório_${currentDate}.pdf")
+                  ..click();
+              },
+              child: Text('Exporte em Pdf'),
+            ),
             Expanded(
               flex: 1,
-              child: SfDataGrid(
-                key: key,
-                allowSorting: true,
-                allowMultiColumnSorting: true,
-                source: dataSource,
-                columns: <GridColumn>[
-                  GridColumn(
-                    columnWidthMode: ColumnWidthMode.fill,
-                    columnName: 'nome',
-                    label: const Center(child: Text('Nome')),
-                  ),
-                  GridColumn(
-                    columnWidthMode: ColumnWidthMode.fill,
-                    columnName: 'servidor_2025',
-                    label: const Center(child: Text('Servidor 2025')),
-                  ),
-                  GridColumn(
-                    columnWidthMode: ColumnWidthMode.fitByCellValue,
-                    columnName: 'secretaria',
-                    label: const Center(child: Text('Secretaria')),
-                  ),
-                  GridColumn(
-                    columnWidthMode: ColumnWidthMode.fitByCellValue,
-                    columnName: 'vinculo',
-                    label: const Center(child: Text('Vínculo')),
-                  ),
-                  GridColumn(
-                    columnWidthMode: ColumnWidthMode.fitByCellValue,
-                    columnName: 'total_liquido',
-                    label: const Center(child: Text('Total Líquido')),
-                  ),
-                ],
+              child: SfDataGridTheme(
+                data: SfDataGridThemeData(
+                  sortIconColor: Colors.white,
+                  headerColor: Color.fromARGB(255, 3, 9, 97),
+                ),
+                child: SfDataGrid(
+                  key: key,
+                  allowSorting: true,
+                  allowMultiColumnSorting: true,
+                  source: dataSource,
+                  columns: <GridColumn>[
+                    GridColumn(
+                      columnWidthMode: ColumnWidthMode.fill,
+                      columnName: 'nome',
+                      label: Center(
+                          child: Text(
+                        'Nome',
+                        style: _estiloTextos,
+                      )),
+                    ),
+                    GridColumn(
+                      columnWidthMode: ColumnWidthMode.fill,
+                      columnName: 'servidor_2025',
+                      label: Center(
+                          child: Text(
+                        'Servidor 2025',
+                        style: _estiloTextos,
+                      )),
+                    ),
+                    GridColumn(
+                      columnWidthMode: ColumnWidthMode.fitByCellValue,
+                      columnName: 'secretaria',
+                      label: Center(
+                          child: Text(
+                        'Secretaria',
+                        style: _estiloTextos,
+                      )),
+                    ),
+                    GridColumn(
+                      columnWidthMode: ColumnWidthMode.fitByCellValue,
+                      columnName: 'vinculo',
+                      label: Center(
+                          child: Text(
+                        'Vínculo',
+                        style: _estiloTextos,
+                      )),
+                    ),
+                    GridColumn(
+                      columnWidthMode: ColumnWidthMode.fitByCellValue,
+                      columnName: 'total_liquido',
+                      label: Center(
+                          child: Text(
+                        'Total Líquido',
+                        style: _estiloTextos,
+                      )),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -291,7 +356,8 @@ class ServidorDataSource extends DataGridSource {
       return DataGridRow(cells: [
         DataGridCell(columnName: 'nome', value: servidor['nome_servidor']),
         DataGridCell(
-            columnName: "servidor_2025", value: servidor['servidor_2025']),
+            columnName: "servidor_2025",
+            value: servidor['servidor_2025'] ?? "SEM NOME"),
         DataGridCell(columnName: 'secretaria', value: servidor['secretaria']),
         DataGridCell(columnName: 'vinculo', value: servidor['vinculo']),
         DataGridCell(

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:vaga_supabase/app/core/config/enumSecretaria.dart';
 import 'package:vaga_supabase/app/core/config/enumSituacaoAtual.dart';
 import 'package:vaga_supabase/app/core/config/enumVinculos.dart';
-import 'package:vaga_supabase/app/features/servidores/components/row_component.dart';
 import 'package:vaga_supabase/app/features/servidores/components/servidor_detail.dart';
 
 class GetServidoresPage2 extends StatefulWidget {
@@ -23,6 +25,7 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
   SituacaoAtual? _selectedSituacao;
 
   late final Stream<List<Map<String, dynamic>>> stream;
+  late ServidorDataSource dataSource;
 
   @override
   void initState() {
@@ -118,6 +121,7 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
                 Expanded(
                   flex: 3,
                   child: DropdownButtonFormField<Secretaria>(
+                    decoration: _decoration,
                     value: _selectedSecretaria,
                     onChanged: (value) =>
                         setState(() => _selectedSecretaria = value),
@@ -134,6 +138,7 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
                 Expanded(
                   flex: 3,
                   child: DropdownButtonFormField<Vinculo>(
+                    decoration: _decoration,
                     value: _selectedVinculo,
                     onChanged: (value) =>
                         setState(() => _selectedVinculo = value),
@@ -150,6 +155,7 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
                 Expanded(
                   flex: 3,
                   child: DropdownButtonFormField<SituacaoAtual>(
+                    decoration: _decoration,
                     value: _selectedSituacao,
                     onChanged: (value) =>
                         setState(() => _selectedSituacao = value),
@@ -172,19 +178,6 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
               child: const Text('Resetar Filtros'),
             ),
           ),
-          Row(
-            children: [
-              RowComponent('NOME SERVIDOR', 3, Colors.blue,
-                  textColor: Colors.white),
-              RowComponent('SERVIDOR 2025', 3, Colors.blue,
-                  textColor: Colors.white),
-              RowComponent('CARGO', 3, Colors.blue, textColor: Colors.white),
-              RowComponent('SECRETARIA', 2, Colors.blue,
-                  textColor: Colors.white),
-              RowComponent('VINCULO', 3, Colors.blue, textColor: Colors.white),
-              RowComponent('AÇÕES', 1, Colors.blue, textColor: Colors.white),
-            ],
-          ),
           Expanded(
             child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: getFilteredStream(),
@@ -204,41 +197,70 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
                 }
 
                 final servidores = snapshot.data!;
-                return ListView.builder(
-                  itemCount: servidores.length,
-                  itemBuilder: (context, index) {
-                    final servidor = servidores[index];
-                    return Row(
-                      children: [
-                        RowComponent(servidor['nome_servidor'] ?? 'Sem Nome', 3,
-                            Colors.white),
-                        RowComponent(servidor['servidor_2025'] ?? 'Sem Nome', 3,
-                            Colors.white),
-                        RowComponent(
-                            servidor['cargo'] ?? 'Sem Nome', 3, Colors.white),
-                        RowComponent(servidor['secretaria'] ?? 'Sem Nome', 2,
-                            Colors.white),
-                        RowComponent(
-                            servidor['vinculo'] ?? 'Sem Nome', 3, Colors.white),
-                        Expanded(
-                          flex: 1,
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ServidorDetail(
-                                    data: servidor,
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.remove_red_eye),
+                dataSource = ServidorDataSource(servidores, context);
+
+                return SfDataGridTheme(
+                  data: SfDataGridThemeData(
+                      sortIconColor: Colors.white,
+                      headerColor: Color.fromARGB(255, 3, 9, 97)),
+                  child: SfDataGrid(
+                      allowSorting: true,
+                      allowMultiColumnSorting: true,
+                      isScrollbarAlwaysShown: true,
+                      showSortNumbers: true,
+                      source: dataSource,
+                      columns: <GridColumn>[
+                        GridColumn(
+                          columnWidthMode: ColumnWidthMode.fill,
+                          columnName: 'nome',
+                          label: Center(
+                            child: Text(
+                              'Nome',
+                              style: _estiloTextos,
+                            ),
                           ),
                         ),
-                      ],
-                    );
-                  },
+                        GridColumn(
+                          columnWidthMode: ColumnWidthMode.fill,
+                          columnName: 'servidor_2025',
+                          label: Center(
+                            child: Text(
+                              'Servidor 2025',
+                              style: _estiloTextos,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnWidthMode: ColumnWidthMode.fill,
+                          columnName: 'cargo',
+                          label: Center(
+                            child: Text(
+                              'Cargo',
+                              style: _estiloTextos,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnWidthMode: ColumnWidthMode.fill,
+                          columnName: 'secretaria',
+                          label: Center(
+                            child: Text(
+                              'Secretaria',
+                              style: _estiloTextos,
+                            ),
+                          ),
+                        ),
+                        GridColumn(
+                          columnWidthMode: ColumnWidthMode.fill,
+                          columnName: 'acoes',
+                          label: Center(
+                            child: Text(
+                              "Ações",
+                              style: _estiloTextos,
+                            ),
+                          ),
+                        ),
+                      ]),
                 );
               },
             ),
@@ -247,4 +269,70 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
       ),
     );
   }
+
+  TextStyle _estiloTextos = TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  );
 }
+
+class ServidorDataSource extends DataGridSource {
+  final BuildContext context;
+  String formatCurrency(double value) {
+    final currencyFormat = NumberFormat.simpleCurrency(locale: 'pt_BR');
+    return currencyFormat.format(value); // Formata o número para R$ 1.000,00
+  }
+
+  ServidorDataSource(List<Map<String, dynamic>> servidores, this.context) {
+    _rows = servidores.map<DataGridRow>((servidor) {
+      return DataGridRow(cells: [
+        DataGridCell(columnName: 'nome', value: servidor['nome_servidor']),
+        DataGridCell(
+            columnName: "servidor_2025",
+            value: servidor['servidor_2025'] ?? "SEM NOME"),
+        DataGridCell(columnName: 'cargo', value: servidor['cargo']),
+        DataGridCell(columnName: 'secretaria', value: servidor['secretaria']),
+        DataGridCell(columnName: "acoes", value: servidor),
+      ]);
+    }).toList();
+  }
+
+  late List<DataGridRow> _rows;
+
+  @override
+  List<DataGridRow> get rows => _rows;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+      cells: row.getCells().map<Widget>((dataGridCell) {
+        if (dataGridCell.columnName == "acoes") {
+          final servidorData = dataGridCell.value;
+          return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return ServidorDetail(data: servidorData);
+                    },
+                  ));
+                },
+                icon: Icon(Icons.remove_red_eye),
+              ));
+        }
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(dataGridCell.value.toString()),
+        );
+      }).toList(),
+    );
+  }
+}
+
+final InputDecoration _decoration = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(8),
+  ),
+  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+);
