@@ -337,7 +337,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
                   if (nomeController.text.isNotEmpty) {
                     dataToUpdate['nome_servidor'] = nomeController.text;
                   }
-                  if (servidor2025Controller.text.isNotEmpty) {
+                  if (servidor2025Controller.text != null) {
                     dataToUpdate['servidor_2025'] = servidor2025Controller.text;
                   }
                   if (secretariaController.text.isNotEmpty) {
@@ -437,10 +437,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
                         .from('vagas')
                         .update(dataToUpdate)
                         .eq('id', widget.data['id']);
-                    print('dados salvos com sucesso');
-                  } else {
-                    print("Nenhum dado foi alterado");
-                  }
+                  } else {}
                 } catch (e) {
                   print(e);
                 }
@@ -450,7 +447,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
                     .eq('id', widget.data['id']);
 
                 // Aqui você pode manipular os dados editados
-                print('Dados salvos');
+
                 Navigator.pop(context);
               },
               child: Text('Salvar'),
@@ -515,7 +512,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
               nomeController =
                   TextEditingController(text: dadosServidor!['nome_servidor']);
               servidor2025Controller = TextEditingController(
-                  text: (dadosServidor['servidor_2025'] ?? "SEM NOME"));
+                  text: (dadosServidor['servidor_2025'] ?? ""));
               secretariaController =
                   TextEditingController(text: dadosServidor['secretaria']);
 

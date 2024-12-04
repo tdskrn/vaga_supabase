@@ -172,12 +172,72 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: ElevatedButton(
-                onPressed: _resetFilters,
-                child: const Text('Resetar Filtros'),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.yellow,
+                    ),
+                    onPressed: _resetFilters,
+                    child: const Text(
+                      'Resetar Filtros',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 28, 1, 104),
+                    ),
+                    onPressed: () async {
+                      String currentDate = 'DATA: ' +
+                          DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+                      PdfDocument relatorio = PdfDocument();
+                      relatorio.pageSettings.orientation =
+                          PdfPageOrientation.landscape;
+                      PdfPage pdfPage = relatorio.pages.add();
+                      PdfGrid pdfGrid = key.currentState!.exportToPdfGrid(
+                        autoColumnWidth: true,
+                        canRepeatHeaders: false,
+                        fitAllColumnsInOnePage: true,
+                      );
+                      pdfGrid.draw(
+                          page: pdfPage, bounds: Rect.fromLTWH(0, 0, 0, 0));
+
+                      List<int> bytes = await relatorio.save();
+                      AnchorElement(
+                          href:
+                              "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
+                        ..setAttribute(
+                            "download", "relatório_${currentDate}.pdf")
+                        ..click();
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          'Exporte em Pdf',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        Icon(
+                          Icons.book,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -205,34 +265,6 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
               ],
             ),
             Divider(),
-            ElevatedButton(
-              onPressed: () async {
-                String currentDate =
-                    'DATA: ' + DateFormat('dd-MM-yyyy').format(DateTime.now());
-
-                PdfDocument document = key.currentState!.exportToPdfDocument(
-                    canRepeatHeaders: false,
-                    fitAllColumnsInOnePage: true,
-                    cellExport: (details) {
-                      if (details.cellType == DataGridExportCellType.row &&
-                          details.columnName == "servidor_2025") {
-                        if (details.cellValue == "" &&
-                            details.cellValue == null &&
-                            details.cellValue == "sem nome" &&
-                            details.cellValue == "SEM NOME") {
-                          details.pdfCell.value = " ";
-                        }
-                      }
-                    });
-                List<int> bytes = await document.save();
-                AnchorElement(
-                    href:
-                        "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
-                  ..setAttribute("download", "relatório_${currentDate}.pdf")
-                  ..click();
-              },
-              child: Text('Exporte em Pdf'),
-            ),
             Expanded(
               flex: 1,
               child: SfDataGridTheme(
@@ -241,13 +273,18 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                   headerColor: Color.fromARGB(255, 3, 9, 97),
                 ),
                 child: SfDataGrid(
+                  columnWidthMode: ColumnWidthMode.auto,
+                  columnWidthCalculationRange:
+                      ColumnWidthCalculationRange.allRows,
+                  selectionMode: SelectionMode.single,
+                  navigationMode: GridNavigationMode.cell,
                   key: key,
                   allowSorting: true,
                   allowMultiColumnSorting: true,
                   source: dataSource,
                   columns: <GridColumn>[
                     GridColumn(
-                      columnWidthMode: ColumnWidthMode.fill,
+                      columnWidthMode: ColumnWidthMode.lastColumnFill,
                       columnName: 'nome',
                       label: Center(
                           child: Text(
@@ -256,7 +293,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      columnWidthMode: ColumnWidthMode.fill,
+                      // columnWidthMode: ColumnWidthMode.auto,
                       columnName: 'servidor_2025',
                       label: Center(
                           child: Text(
@@ -265,7 +302,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      columnWidthMode: ColumnWidthMode.fitByCellValue,
+                      // columnWidthMode: ColumnWidthMode.auto,
                       columnName: 'secretaria',
                       label: Center(
                           child: Text(
@@ -274,7 +311,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      columnWidthMode: ColumnWidthMode.fitByCellValue,
+                      // columnWidthMode: ColumnWidthMode.auto,
                       columnName: 'vinculo',
                       label: Center(
                           child: Text(
@@ -283,7 +320,25 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      columnWidthMode: ColumnWidthMode.fitByCellValue,
+                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnName: 'total_bruto',
+                      label: Center(
+                          child: Text(
+                        'Total Bruto',
+                        style: _estiloTextos,
+                      )),
+                    ),
+                    GridColumn(
+                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnName: 'total_descontos',
+                      label: Center(
+                          child: Text(
+                        'Total Descontos',
+                        style: _estiloTextos,
+                      )),
+                    ),
+                    GridColumn(
+                      // columnWidthMode: ColumnWidthMode.auto,
                       columnName: 'total_liquido',
                       label: Center(
                           child: Text(
@@ -308,10 +363,9 @@ Widget buildSummaryCard({
   required Color color,
 }) {
   return Card(
-    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     color: color,
     child: Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -357,9 +411,15 @@ class ServidorDataSource extends DataGridSource {
         DataGridCell(columnName: 'nome', value: servidor['nome_servidor']),
         DataGridCell(
             columnName: "servidor_2025",
-            value: servidor['servidor_2025'] ?? "SEM NOME"),
+            value: servidor['servidor_2025'] ?? ""),
         DataGridCell(columnName: 'secretaria', value: servidor['secretaria']),
         DataGridCell(columnName: 'vinculo', value: servidor['vinculo']),
+        DataGridCell(
+            columnName: 'total_bruto',
+            value: formatCurrency(servidor['total_bruto'] ?? 0.00)),
+        DataGridCell(
+            columnName: 'total_descontos',
+            value: formatCurrency(servidor['total_descontos'] ?? 0.00)),
         DataGridCell(
             columnName: 'total_liquido',
             value: formatCurrency(servidor['total_liquido'] ?? 0.00)),

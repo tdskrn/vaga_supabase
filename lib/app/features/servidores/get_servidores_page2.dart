@@ -204,6 +204,8 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
                       sortIconColor: Colors.white,
                       headerColor: Color.fromARGB(255, 3, 9, 97)),
                   child: SfDataGrid(
+                      selectionMode: SelectionMode.single,
+                      navigationMode: GridNavigationMode.cell,
                       allowSorting: true,
                       allowMultiColumnSorting: true,
                       isScrollbarAlwaysShown: true,
@@ -289,7 +291,7 @@ class ServidorDataSource extends DataGridSource {
         DataGridCell(columnName: 'nome', value: servidor['nome_servidor']),
         DataGridCell(
             columnName: "servidor_2025",
-            value: servidor['servidor_2025'] ?? "SEM NOME"),
+            value: servidor['servidor_2025'] ?? ""),
         DataGridCell(columnName: 'cargo', value: servidor['cargo']),
         DataGridCell(columnName: 'secretaria', value: servidor['secretaria']),
         DataGridCell(columnName: "acoes", value: servidor),
