@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import 'package:vaga_supabase/app/core/config/enumSecretaria.dart';
 import 'package:vaga_supabase/app/core/config/enumSituacaoAtual.dart';
 import 'package:vaga_supabase/app/core/config/enumVinculos.dart';
@@ -18,6 +20,8 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
   SituacaoAtual? _selectedSituacao;
   final SupabaseClient supabase = Supabase.instance.client;
   late final Stream<List<Map<String, dynamic>>> stream;
+  late ServidorDataSource dataSource;
+  final GlobalKey<SfDataGridState> key = GlobalKey<SfDataGridState>();
 
   @override
   void initState() {
@@ -88,14 +92,16 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
           );
         }
         final dadosFiltrados = snapshot.data;
+        dataSource = ServidorDataSource(dadosFiltrados!);
 
-        double total_bruto = calcular(dadosFiltrados!, 'total_bruto');
+        double total_bruto = calcular(dadosFiltrados, 'total_bruto');
         double total_descontos = calcular(dadosFiltrados, 'total_descontos');
         double total_liquido = calcular(dadosFiltrados, 'total_liquido');
         List nomesServidores = dadosFiltrados
             .map((servidor) => servidor['nome_servidor'])
             .toList();
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: EdgeInsets.all(8.0),
@@ -104,6 +110,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                   Expanded(
                     flex: 3,
                     child: DropdownButtonFormField<Secretaria>(
+                      decoration: _decoration,
                       hint: const Text('Seleciona a Secretaria'),
                       value: _selectedSecretaria,
                       items: Secretaria.values.map((secretaria) {
@@ -121,6 +128,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                   Expanded(
                     flex: 3,
                     child: DropdownButtonFormField<Vinculo>(
+                      decoration: _decoration,
                       value: _selectedVinculo,
                       onChanged: (value) =>
                           setState(() => _selectedVinculo = value),
@@ -137,6 +145,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                   Expanded(
                     flex: 3,
                     child: DropdownButtonFormField<SituacaoAtual>(
+                      decoration: _decoration,
                       value: _selectedSituacao,
                       onChanged: (value) =>
                           setState(() => _selectedSituacao = value),
@@ -160,56 +169,152 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  width: 250,
-                  color: Colors.blueAccent,
-                  child: Text(
-                    formatCurrency(total_bruto),
-                    textAlign: TextAlign.right,
-                  ),
+                buildSummaryCard(
+                  title: 'Total Bruto',
+                  value: formatCurrency(total_bruto),
+                  color: Colors.green,
                 ),
-                Container(
-                  width: 250,
-                  color: Colors.blueAccent,
-                  child: Text(
-                    formatCurrency(total_descontos),
-                    textAlign: TextAlign.right,
-                  ),
+                buildSummaryCard(
+                  title: 'Descontos',
+                  value: formatCurrency(total_descontos),
+                  color: Colors.red,
                 ),
-                Container(
-                  width: 250,
-                  color: Colors.blueAccent,
-                  child: Text(
-                    formatCurrency(
-                      total_liquido,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
+                buildSummaryCard(
+                  title: 'Total Líquido',
+                  value: formatCurrency(total_liquido),
+                  color: Colors.blue,
                 ),
-                Container(
-                  width: 250,
-                  color: Colors.blueAccent,
-                  child: Text(
-                    nomesServidores.length.toString(),
-                    textAlign: TextAlign.right,
-                  ),
+                buildSummaryCard(
+                  title: 'Total de Servidores',
+                  value: nomesServidores.length.toString(),
+                  color: Colors.orange,
                 ),
               ],
             ),
             Divider(),
             Expanded(
-                child: ListView.builder(
-              itemCount: nomesServidores.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(nomesServidores[index]),
-                );
-              },
-            ))
+              flex: 1,
+              child: SfDataGrid(
+                key: key,
+                allowSorting: true,
+                allowMultiColumnSorting: true,
+                source: dataSource,
+                columns: <GridColumn>[
+                  GridColumn(
+                    columnWidthMode: ColumnWidthMode.fill,
+                    columnName: 'nome',
+                    label: const Center(child: Text('Nome')),
+                  ),
+                  GridColumn(
+                    columnWidthMode: ColumnWidthMode.fill,
+                    columnName: 'servidor_2025',
+                    label: const Center(child: Text('Servidor 2025')),
+                  ),
+                  GridColumn(
+                    columnWidthMode: ColumnWidthMode.fitByCellValue,
+                    columnName: 'secretaria',
+                    label: const Center(child: Text('Secretaria')),
+                  ),
+                  GridColumn(
+                    columnWidthMode: ColumnWidthMode.fitByCellValue,
+                    columnName: 'vinculo',
+                    label: const Center(child: Text('Vínculo')),
+                  ),
+                  GridColumn(
+                    columnWidthMode: ColumnWidthMode.fitByCellValue,
+                    columnName: 'total_liquido',
+                    label: const Center(child: Text('Total Líquido')),
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       },
+    );
+  }
+}
+
+Widget buildSummaryCard({
+  required String title,
+  required String value,
+  required Color color,
+}) {
+  return Card(
+    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    color: color,
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+final InputDecoration _decoration = InputDecoration(
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(8),
+  ),
+  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+);
+
+class ServidorDataSource extends DataGridSource {
+  String formatCurrency(double value) {
+    final currencyFormat = NumberFormat.simpleCurrency(locale: 'pt_BR');
+    return currencyFormat.format(value); // Formata o número para R$ 1.000,00
+  }
+
+  ServidorDataSource(List<Map<String, dynamic>> servidores) {
+    _rows = servidores.map<DataGridRow>((servidor) {
+      return DataGridRow(cells: [
+        DataGridCell(columnName: 'nome', value: servidor['nome_servidor']),
+        DataGridCell(
+            columnName: "servidor_2025", value: servidor['servidor_2025']),
+        DataGridCell(columnName: 'secretaria', value: servidor['secretaria']),
+        DataGridCell(columnName: 'vinculo', value: servidor['vinculo']),
+        DataGridCell(
+            columnName: 'total_liquido',
+            value: formatCurrency(servidor['total_liquido'] ?? 0.00)),
+      ]);
+    }).toList();
+  }
+
+  late List<DataGridRow> _rows;
+
+  @override
+  List<DataGridRow> get rows => _rows;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+      cells: row.getCells().map<Widget>((dataGridCell) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(dataGridCell.value.toString()),
+        );
+      }).toList(),
     );
   }
 }

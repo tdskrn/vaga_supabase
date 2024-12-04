@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  archive:
+    dependency: transitive
+    description:
+      name: archive
+      sha256: cb6a278ef2dbb298455e1a713bda08524a175630ec643a242c399c932a0a1f7d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.1"
   async:
     dependency: transitive
     description:
@@ -73,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      sha256: b30acd5944035672bc15c6b7a8b47d773e41e2f17de064350988c5d02adb1c68
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   crypto:
     dependency: transitive
     description:
@@ -216,6 +232,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      sha256: f31d52537dc417fdcde36088fdf11d191026fd5e4fae742491ebd40e5a8bea7d
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.0"
   intl:
     dependency: "direct main"
     description:
@@ -224,6 +248,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
+  jiffy:
+    dependency: transitive
+    description:
+      name: jiffy
+      sha256: cc1d4b75016a9156c29b5d61f0c9176c3e0fb0580cc5a0e0422b5d2cab3fbfff
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.1"
   jwt_decode:
     dependency: transitive
     description:
@@ -360,6 +392,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      sha256: c15605cd28af66339f8eb6fbe0e541bfe2d1b72d5825efc6598f3e0a31b9ad27
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.2"
   platform:
     dependency: transitive
     description:
@@ -525,6 +565,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.8.1"
+  syncfusion_flutter_core:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_core
+      sha256: "325f519ce4ad8edd81811c21b853d72018529e353584490824da0555156ba076"
+      url: "https://pub.dev"
+    source: hosted
+    version: "27.2.5"
+  syncfusion_flutter_datagrid:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_datagrid
+      sha256: "1ba098d01468ed9dd400bf69403eedfbbd3626dce675005697a2698834f05fde"
+      url: "https://pub.dev"
+    source: hosted
+    version: "27.2.5"
+  syncfusion_flutter_datagrid_export:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_datagrid_export
+      sha256: bcad87a22686ec4396754b9e16371c49c34458ca320160f001dd70a2f1714ea0
+      url: "https://pub.dev"
+    source: hosted
+    version: "27.2.5"
+  syncfusion_flutter_pdf:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_pdf
+      sha256: da7fb9d156fafdce7099dc711c1a2dc522c48361188bd4be78520b22c99bbafd
+      url: "https://pub.dev"
+    source: hosted
+    version: "27.2.5"
+  syncfusion_flutter_xlsio:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_xlsio
+      sha256: "9ea161bffa9a5d41686f29ce59314b15d06ad3ad0850dbd76aeb2cc075c30b8c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "27.2.5"
+  syncfusion_officecore:
+    dependency: transitive
+    description:
+      name: syncfusion_officecore
+      sha256: d69d58d9a07b2d980f5758e407c76fdef8d70537f2c9affea1d8e01a6a0c1615
+      url: "https://pub.dev"
+    source: hosted
+    version: "27.2.5"
   term_glyph:
     dependency: transitive
     description:
@@ -661,6 +749,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  xml:
+    dependency: transitive
+    description:
+      name: xml
+      sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.0"
   yet_another_json_isolate:
     dependency: transitive
     description:

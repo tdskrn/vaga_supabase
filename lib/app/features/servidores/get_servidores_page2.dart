@@ -179,7 +179,7 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
               RowComponent('SERVIDOR 2025', 3, Colors.blue,
                   textColor: Colors.white),
               RowComponent('CARGO', 3, Colors.blue, textColor: Colors.white),
-              RowComponent('SECRETARIA', 3, Colors.blue,
+              RowComponent('SECRETARIA', 2, Colors.blue,
                   textColor: Colors.white),
               RowComponent('VINCULO', 3, Colors.blue, textColor: Colors.white),
               RowComponent('AÇÕES', 1, Colors.blue, textColor: Colors.white),
@@ -216,7 +216,7 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
                             Colors.white),
                         RowComponent(
                             servidor['cargo'] ?? 'Sem Nome', 3, Colors.white),
-                        RowComponent(servidor['secretaria'] ?? 'Sem Nome', 3,
+                        RowComponent(servidor['secretaria'] ?? 'Sem Nome', 2,
                             Colors.white),
                         RowComponent(
                             servidor['vinculo'] ?? 'Sem Nome', 3, Colors.white),

@@ -40,6 +40,9 @@ dependencies:
   go_router: ^14.6.1
   flutter_easyloading:
   intl: ^0.18.0
+  syncfusion_flutter_datagrid: ^27.2.5
+  syncfusion_flutter_datagrid_export: ^27.2.5
+  syncfusion_flutter_pdf: ^27.2.5
 
 dev_dependencies:
   flutter_test:
