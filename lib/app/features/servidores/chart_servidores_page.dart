@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -432,14 +430,13 @@ class ServidorDataSource extends DataGridSource {
         DataGridCell(columnName: 'secretaria', value: servidor['secretaria']),
         DataGridCell(columnName: 'vinculo', value: servidor['vinculo']),
         DataGridCell(
-            columnName: 'total_bruto',
-            value: formatCurrency(servidor['total_bruto'] ?? 0.00)),
+            columnName: 'total_bruto', value: servidor['total_bruto'] ?? 0.00),
         DataGridCell(
             columnName: 'total_descontos',
-            value: formatCurrency(servidor['total_descontos'] ?? 0.00)),
+            value: servidor['total_descontos'] ?? 0.00),
         DataGridCell(
             columnName: 'total_liquido',
-            value: formatCurrency(servidor['total_liquido'] ?? 0.00)),
+            value: servidor['total_liquido'] ?? 0.00),
       ]);
     }).toList();
   }
@@ -449,10 +446,50 @@ class ServidorDataSource extends DataGridSource {
   @override
   List<DataGridRow> get rows => _rows;
 
+  void sortColumn(int columnIndex, bool ascending) {
+    final column = _rows[0].getCells()[columnIndex].columnName;
+
+    if (column == 'total_bruto' ||
+        column == 'total_descontos' ||
+        column == 'total_liquido') {
+      _rows.sort((a, b) {
+        // Comparar os valores como números
+        final valueA = a.getCells()[columnIndex].value as double;
+        final valueB = b.getCells()[columnIndex].value as double;
+        return ascending ? valueA.compareTo(valueB) : valueB.compareTo(valueA);
+      });
+    } else {
+      // Ordenação de outros valores como string
+      _rows.sort((a, b) {
+        final valueA = a.getCells()[columnIndex].value as String;
+        final valueB = b.getCells()[columnIndex].value as String;
+        return ascending ? valueA.compareTo(valueB) : valueB.compareTo(valueA);
+      });
+    }
+  }
+
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((dataGridCell) {
+        if (dataGridCell.columnName == "total_bruto") {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(formatCurrency(dataGridCell.value)),
+          );
+        }
+        if (dataGridCell.columnName == "total_liquido") {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(formatCurrency(dataGridCell.value)),
+          );
+        }
+        if (dataGridCell.columnName == "total_descontos") {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(formatCurrency(dataGridCell.value)),
+          );
+        }
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(dataGridCell.value.toString()),

@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -8,7 +10,7 @@ import 'package:vaga_supabase/app/core/secrets/app_secrets.dart';
 Future<void> main() async {
   await Supabase.initialize(
       url: AppSecrets.supabaseUrl, anonKey: AppSecrets.supabaseKey);
-  runApp(const MyApp());
+  runApp(DevicePreview(enabled: !kReleaseMode, builder: (_) => const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -22,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      locale: DevicePreview.locale(context),
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       builder: EasyLoading.init(

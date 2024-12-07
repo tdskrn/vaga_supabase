@@ -651,9 +651,12 @@ class _ServidorDetailState extends State<ServidorDetail> {
                                           "R\$ ${(dadosStreamServidor['valor_gratificacao'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue)
                                       : Container(),
-                                  dadosStreamServidor[
-                                              'porcentagem_gratificacao'] !=
-                                          "0.00%"
+                                  (dadosStreamServidor[
+                                                  'porcentagem_gratificacao'] !=
+                                              "0.00%" &&
+                                          dadosStreamServidor[
+                                                  'porcentagem_gratificacao'] !=
+                                              null)
                                       ? _highlightedText(
                                           "Porcentagem Gratificação",
                                           dadosStreamServidor[

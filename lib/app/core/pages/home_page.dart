@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 30,
         actions: [
           Text('SAIR'),
           IconButton(
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-        title: Text('Usuário: '),
+        title: Text('Usuário: ${supabase.auth.currentUser!.email}'),
       ),
       body: pages[currentIndex],
       bottomNavigationBar: Theme(
