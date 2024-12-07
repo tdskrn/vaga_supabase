@@ -13,6 +13,11 @@ final appRouter = GoRouter(
     redirect: (context, state) async {
       final isGoingTo = state.fullPath;
       final isAuth = await managerAuth.isAuthenticated();
+
+      if (isAuth && (isGoingTo == '/login-page' || isGoingTo == '/')) {
+        return '/home-page';
+      }
+
       if (!isAuth && (isGoingTo != '/login-page' && isGoingTo != '/')) {
         return '/login-page';
       }

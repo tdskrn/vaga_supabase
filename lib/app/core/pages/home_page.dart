@@ -58,10 +58,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         child: BottomNavigationBar(
-          unselectedItemColor: const Color.fromARGB(255, 75, 74, 74),
+          unselectedItemColor: Colors.white,
           type: BottomNavigationBarType.fixed,
           currentIndex: currentIndex,
-          fixedColor: Colors.white,
+          fixedColor: Colors.yellow,
           onTap: (value) {
             currentIndex = value;
             setState(() {});

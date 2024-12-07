@@ -114,62 +114,76 @@ class _GetServidoresPageState extends State<GetServidoresPage2> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: DropdownButtonFormField<Secretaria>(
-                    decoration: _decoration,
-                    value: _selectedSecretaria,
-                    onChanged: (value) =>
-                        setState(() => _selectedSecretaria = value),
-                    hint: const Text('Selecione a Secretaria'),
-                    items: Secretaria.values.map((secretaria) {
-                      return DropdownMenuItem(
-                        value: secretaria,
-                        child: Text(secretaria.name),
-                      );
-                    }).toList(),
-                  ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final itemWidth = constraints.maxWidth > 600
+                  ? (constraints.maxWidth - 16) / 3.3
+                  : (constraints.maxWidth - 16) / 1.5;
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: [
+                    SizedBox(
+                      width: itemWidth,
+                      child: DropdownButtonFormField<Secretaria>(
+                        isExpanded: true,
+                        decoration: _decoration,
+                        value: _selectedSecretaria,
+                        onChanged: (value) =>
+                            setState(() => _selectedSecretaria = value),
+                        hint: Text('Selecione a Secretaria'),
+                        items: Secretaria.values.map((secretaria) {
+                          return DropdownMenuItem(
+                            value: secretaria,
+                            child: Text(secretaria.name),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: itemWidth,
+                      child: DropdownButtonFormField<Vinculo>(
+                        isExpanded: true,
+                        decoration: _decoration,
+                        value: _selectedVinculo,
+                        onChanged: (value) =>
+                            setState(() => _selectedVinculo = value),
+                        hint: Text('Selecione o Vínculo'),
+                        items: Vinculo.values.map((vinculo) {
+                          return DropdownMenuItem(
+                            value: vinculo,
+                            child: Text(vinculo.name),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
+                      width: itemWidth,
+                      child: DropdownButtonFormField<SituacaoAtual>(
+                        isExpanded: true,
+                        decoration: _decoration,
+                        value: _selectedSituacao,
+                        onChanged: (value) =>
+                            setState(() => _selectedSituacao = value),
+                        hint: Text(
+                          'Selecione a Situação',
+                        ),
+                        items: SituacaoAtual.values.map((situacao) {
+                          return DropdownMenuItem(
+                            value: situacao,
+                            child: Text(situacao.name),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  flex: 3,
-                  child: DropdownButtonFormField<Vinculo>(
-                    decoration: _decoration,
-                    value: _selectedVinculo,
-                    onChanged: (value) =>
-                        setState(() => _selectedVinculo = value),
-                    hint: const Text('Selecione o Vínculo'),
-                    items: Vinculo.values.map((vinculo) {
-                      return DropdownMenuItem(
-                        value: vinculo,
-                        child: Text(vinculo.name),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  flex: 3,
-                  child: DropdownButtonFormField<SituacaoAtual>(
-                    decoration: _decoration,
-                    value: _selectedSituacao,
-                    onChanged: (value) =>
-                        setState(() => _selectedSituacao = value),
-                    hint: const Text('Selecione a Situação'),
-                    items: SituacaoAtual.values.map((situacao) {
-                      return DropdownMenuItem(
-                        value: situacao,
-                        child: Text(situacao.name),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -336,5 +350,6 @@ final InputDecoration _decoration = InputDecoration(
   border: OutlineInputBorder(
     borderRadius: BorderRadius.circular(8),
   ),
+  hintStyle: TextStyle(fontSize: 10),
   contentPadding: const EdgeInsets.symmetric(horizontal: 10),
 );

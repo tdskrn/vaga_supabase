@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -114,66 +115,77 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: DropdownButtonFormField<Secretaria>(
-                      decoration: _decoration,
-                      hint: const Text('Seleciona a Secretaria'),
-                      value: _selectedSecretaria,
-                      items: Secretaria.values.map((secretaria) {
-                        return DropdownMenuItem(
-                            value: secretaria, child: Text(secretaria.name));
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedSecretaria = value;
-                        });
-                      },
-                    ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final itemWidth = constraints.maxWidth > 600
+                    ? (constraints.maxWidth - 16) / 3.3
+                    : (constraints.maxWidth - 16) / 1.5;
+                return Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Wrap(
+                    children: [
+                      SizedBox(
+                        width: itemWidth,
+                        child: DropdownButtonFormField<Secretaria>(
+                          isExpanded: true,
+                          decoration: _decoration,
+                          hint: const Text('Seleciona a Secretaria'),
+                          value: _selectedSecretaria,
+                          items: Secretaria.values.map((secretaria) {
+                            return DropdownMenuItem(
+                                value: secretaria,
+                                child: Text(secretaria.name));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedSecretaria = value;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: itemWidth,
+                        child: DropdownButtonFormField<Vinculo>(
+                          isExpanded: true,
+                          decoration: _decoration,
+                          value: _selectedVinculo,
+                          onChanged: (value) =>
+                              setState(() => _selectedVinculo = value),
+                          hint: const Text('Selecione o Vínculo'),
+                          items: Vinculo.values.map((vinculo) {
+                            return DropdownMenuItem(
+                              value: vinculo,
+                              child: Text(vinculo.name),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: itemWidth,
+                        child: DropdownButtonFormField<SituacaoAtual>(
+                          isExpanded: true,
+                          decoration: _decoration,
+                          value: _selectedSituacao,
+                          onChanged: (value) =>
+                              setState(() => _selectedSituacao = value),
+                          hint: const Text('Selecione a Situação'),
+                          items: SituacaoAtual.values.map((situacao) {
+                            return DropdownMenuItem(
+                              value: situacao,
+                              child: Text(situacao.name),
+                            );
+                          }).toList(),
+                        ),
+                      )
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 3,
-                    child: DropdownButtonFormField<Vinculo>(
-                      decoration: _decoration,
-                      value: _selectedVinculo,
-                      onChanged: (value) =>
-                          setState(() => _selectedVinculo = value),
-                      hint: const Text('Selecione o Vínculo'),
-                      items: Vinculo.values.map((vinculo) {
-                        return DropdownMenuItem(
-                          value: vinculo,
-                          child: Text(vinculo.name),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 3,
-                    child: DropdownButtonFormField<SituacaoAtual>(
-                      decoration: _decoration,
-                      value: _selectedSituacao,
-                      onChanged: (value) =>
-                          setState(() => _selectedSituacao = value),
-                      hint: const Text('Selecione a Situação'),
-                      items: SituacaoAtual.values.map((situacao) {
-                        return DropdownMenuItem(
-                          value: situacao,
-                          child: Text(situacao.name),
-                        );
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
+                );
+              },
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -239,30 +251,35 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildSummaryCard(
-                  title: 'Total Bruto',
-                  value: formatCurrency(total_bruto),
-                  color: Colors.green,
-                ),
-                buildSummaryCard(
-                  title: 'Descontos',
-                  value: formatCurrency(total_descontos),
-                  color: Colors.red,
-                ),
-                buildSummaryCard(
-                  title: 'Total Líquido',
-                  value: formatCurrency(total_liquido),
-                  color: Colors.blue,
-                ),
-                buildSummaryCard(
-                  title: 'Total de Servidores',
-                  value: nomesServidores.length.toString(),
-                  color: Colors.orange,
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: [
+                    buildSummaryCard(
+                      title: 'Total Bruto',
+                      value: formatCurrency(total_bruto),
+                      color: Colors.green,
+                    ),
+                    buildSummaryCard(
+                      title: 'Descontos',
+                      value: formatCurrency(total_descontos),
+                      color: Colors.red,
+                    ),
+                    buildSummaryCard(
+                      title: 'Total Líquido',
+                      value: formatCurrency(total_liquido),
+                      color: Colors.blue,
+                    ),
+                    buildSummaryCard(
+                      title: 'Total de Servidores',
+                      value: nomesServidores.length.toString(),
+                      color: Colors.orange,
+                    ),
+                  ],
+                );
+              },
             ),
             Divider(),
             Expanded(
@@ -284,7 +301,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                   source: dataSource,
                   columns: <GridColumn>[
                     GridColumn(
-                      columnWidthMode: ColumnWidthMode.lastColumnFill,
+                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'nome',
                       label: Center(
                           child: Text(
@@ -293,7 +310,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'servidor_2025',
                       label: Center(
                           child: Text(
@@ -302,7 +319,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'secretaria',
                       label: Center(
                           child: Text(
@@ -311,7 +328,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'vinculo',
                       label: Center(
                           child: Text(
@@ -320,7 +337,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'total_bruto',
                       label: Center(
                           child: Text(
@@ -329,7 +346,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'total_descontos',
                       label: Center(
                           child: Text(
@@ -338,7 +355,7 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                       )),
                     ),
                     GridColumn(
-                      // columnWidthMode: ColumnWidthMode.auto,
+                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'total_liquido',
                       label: Center(
                           child: Text(

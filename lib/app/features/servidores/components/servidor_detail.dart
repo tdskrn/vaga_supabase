@@ -4,6 +4,7 @@ import 'package:vaga_supabase/app/core/config/enumSituacaoAtual.dart';
 import 'package:vaga_supabase/app/core/config/enumVinculos.dart';
 import 'package:vaga_supabase/app/core/config/utils.dart';
 import 'package:vaga_supabase/app/core/router/app_router.dart';
+import 'package:vaga_supabase/app/core/router/theme/icon_theme.dart';
 
 Widget _highlightedText(String title, String content, Color color) {
   return Padding(
@@ -466,6 +467,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
 
     return Scaffold(
         appBar: AppBar(
+          iconTheme: iconTheme,
           title: Text(
             'Detalhes do Servidor',
             style: TextStyle(
