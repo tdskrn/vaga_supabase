@@ -35,6 +35,8 @@ class _VagasPageState extends State<VagasPage> {
     final cargoController = TextEditingController(text: vaga?['cargo'] ?? '');
     final quantidadeController =
         TextEditingController(text: vaga?['quantidade']?.toString() ?? '');
+    final observacoesController =
+        TextEditingController(text: vaga?['observacoes'] ?? '');
 
     await showDialog(
       context: context,
@@ -53,6 +55,11 @@ class _VagasPageState extends State<VagasPage> {
                 decoration: const InputDecoration(labelText: 'Quantidade'),
                 keyboardType: TextInputType.number,
               ),
+              TextField(
+                controller: observacoesController,
+                decoration: const InputDecoration(labelText: 'Observações'),
+                maxLines: 3,
+              ),
             ],
           ),
           actions: [
@@ -65,6 +72,7 @@ class _VagasPageState extends State<VagasPage> {
                 final cargo = cargoController.text.trim();
                 final quantidade =
                     int.tryParse(quantidadeController.text.trim());
+                final observacoes = observacoesController.text.trim();
 
                 if (cargo.isEmpty || quantidade == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -76,14 +84,17 @@ class _VagasPageState extends State<VagasPage> {
                 }
 
                 if (isEditing) {
-                  await supabase
-                      .from('numero_vagas')
-                      .update({'cargo': cargo, 'quantidade': quantidade}).eq(
-                          'id', vaga['id']);
+                  await supabase.from('numero_vagas').update({
+                    'cargo': cargo,
+                    'quantidade': quantidade,
+                    'observacoes': observacoes,
+                  }).eq('id', vaga['id']);
                 } else {
-                  await supabase
-                      .from('numero_vagas')
-                      .insert({'cargo': cargo, 'quantidade': quantidade});
+                  await supabase.from('numero_vagas').insert({
+                    'cargo': cargo,
+                    'quantidade': quantidade,
+                    'observacoes': observacoes,
+                  });
                 }
 
                 Navigator.pop(context);
@@ -176,6 +187,16 @@ class _VagasPageState extends State<VagasPage> {
                       leading: const Icon(Icons.edit),
                       onTap: () => _addOrEditVaga(vaga: vaga),
                     ),
+                    if (vaga['observacoes'] != null &&
+                        vaga['observacoes'].isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          'Obs: ${vaga['observacoes']}',
+                          style: const TextStyle(
+                              fontSize: 12, fontStyle: FontStyle.italic),
+                        ),
+                      ),
                     StreamBuilder(
                       stream: fetchServidores(vaga['cargo']),
                       builder: (context, snapshot) {
@@ -207,8 +228,7 @@ class _VagasPageState extends State<VagasPage> {
                         if (servidoresFiltrados.isEmpty) {
                           return const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Text(
-                                'Nenhum servidor encontrado com SERVIDOR_2025.'),
+                            child: Text('Nenhuma vaga preenchida!'),
                           );
                         }
 
