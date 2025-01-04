@@ -79,7 +79,7 @@ class _VagasPageState extends State<VagasPage> {
                   await supabase
                       .from('numero_vagas')
                       .update({'cargo': cargo, 'quantidade': quantidade}).eq(
-                          'id', vaga!['id']);
+                          'id', vaga['id']);
                 } else {
                   await supabase
                       .from('numero_vagas')

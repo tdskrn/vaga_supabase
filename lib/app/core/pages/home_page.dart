@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(
                 Icons.home,
               ),
-              label: 'Servidores 3',
+              label: 'Servidores',
             ),
             BottomNavigationBarItem(
               icon: Icon(
@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(
                 Icons.format_quote,
               ),
-              label: 'Relatórios',
+              label: 'Vagas',
             ),
           ],
         ),
