@@ -5,6 +5,7 @@ import 'package:vaga_supabase/app/core/pages/auth/controllers/login_controller.d
 import 'package:vaga_supabase/app/features/servidores/chart_servidores_page.dart';
 
 import 'package:vaga_supabase/app/features/servidores/get_servidores_page2.dart';
+import 'package:vaga_supabase/app/features/servidores/vagas_page.dart';
 
 class HomePage extends StatefulWidget {
   static const String name = 'home-page';
@@ -21,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> pages = [
     GetServidoresPage2(),
     ChartServidoresPage(),
-    Placeholder(),
+    VagasPage(),
   ];
 
   @override
