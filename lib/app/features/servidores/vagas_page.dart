@@ -170,10 +170,19 @@ class _VagasPageState extends State<VagasPage> {
                                   .toList();
                               final preenchidas = servidoresFiltrados.length;
                               final faltando = vaga['quantidade'] - preenchidas;
+                              final porcentagem =
+                                  (preenchidas / vaga['quantidade']) * 100;
+
+                              // Definir cor condicional
+                              final corTexto = porcentagem >= 90
+                                  ? Colors.red
+                                  : porcentagem >= 75
+                                      ? Colors.orange
+                                      : Colors.green;
 
                               return Text(
                                 'Preenchidas: $preenchidas / ${vaga['quantidade']} (Faltando: $faltando)',
-                                style: const TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 12, color: corTexto),
                               );
                             },
                           ),
