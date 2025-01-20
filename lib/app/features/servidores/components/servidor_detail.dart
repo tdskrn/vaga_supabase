@@ -171,14 +171,6 @@ class _ServidorDetailState extends State<ServidorDetail> {
           .eq('id', widget.data['id']);
 
       // Aguarda um curto período para garantir que o trigger tenha tempo de executar
-
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dados atualizados com sucesso!')),
-        );
-      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

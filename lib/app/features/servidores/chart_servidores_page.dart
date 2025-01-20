@@ -309,15 +309,6 @@ class _ChartServidoresPageState extends State<ChartServidoresPage> {
                     ),
                     GridColumn(
                       columnWidthMode: ColumnWidthMode.fill,
-                      columnName: 'servidor_2025',
-                      label: Center(
-                          child: Text(
-                        'Servidor 2025',
-                        style: _estiloTextos,
-                      )),
-                    ),
-                    GridColumn(
-                      columnWidthMode: ColumnWidthMode.fill,
                       columnName: 'secretaria',
                       label: Center(
                           child: Text(
@@ -424,9 +415,6 @@ class ServidorDataSource extends DataGridSource {
     _rows = servidores.map<DataGridRow>((servidor) {
       return DataGridRow(cells: [
         DataGridCell(columnName: 'nome', value: servidor['nome_servidor']),
-        DataGridCell(
-            columnName: "servidor_2025",
-            value: servidor['servidor_2025'] ?? ""),
         DataGridCell(columnName: 'secretaria', value: servidor['secretaria']),
         DataGridCell(columnName: 'vinculo', value: servidor['vinculo']),
         DataGridCell(
