@@ -166,7 +166,7 @@ class _VagasPageState extends State<VagasPage> {
                               final servidores = snapshot.data!;
                               final servidoresFiltrados = servidores
                                   .where((servidor) =>
-                                      servidor['servidor_2025'] != null)
+                                      servidor['nome_servidor'] != null)
                                   .toList();
                               final preenchidas = servidoresFiltrados.length;
                               final faltando = vaga['quantidade'] - preenchidas;
@@ -231,7 +231,7 @@ class _VagasPageState extends State<VagasPage> {
                         final servidores = snapshot.data!;
                         final servidoresFiltrados = servidores
                             .where(
-                                (servidor) => servidor['servidor_2025'] != null)
+                                (servidor) => servidor['nome_servidor'] != null)
                             .toList();
 
                         if (servidoresFiltrados.isEmpty) {
@@ -258,15 +258,9 @@ class _VagasPageState extends State<VagasPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Servidor Antigo: ${servidor['nome_servidor']}',
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      'Servidor Novo: ${servidor['servidor_2025']}',
+                                      'Servidor: ${servidor['nome_servidor']}',
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,

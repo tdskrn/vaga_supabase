@@ -71,7 +71,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
   Map<String, dynamic> dadosServidor = {};
 
   late final TextEditingController nomeController;
-  late final TextEditingController servidor2025Controller;
+
   late final TextEditingController secretariaController;
   late final TextEditingController lotacaoController;
   late final TextEditingController cargoController;
@@ -109,7 +109,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
   void dispose() {
     // Limpando os controladores ao finalizar
     nomeController.dispose();
-    servidor2025Controller.dispose();
+
     secretariaController.dispose();
     lotacaoController.dispose();
     cargoController.dispose();
@@ -175,11 +175,6 @@ class _ServidorDetailState extends State<ServidorDetail> {
                 ),
                 TextFormField(
                   inputFormatters: [UpperCaseTextFormatter()],
-                  controller: servidor2025Controller,
-                  decoration: InputDecoration(labelText: 'Servidor 2025'),
-                ),
-                TextFormField(
-                  inputFormatters: [UpperCaseTextFormatter()],
                   controller: cargoController,
                   decoration: InputDecoration(labelText: 'Cargo'),
                 ),
@@ -238,9 +233,6 @@ class _ServidorDetailState extends State<ServidorDetail> {
                 TextFormField(
                   controller: salarioBaseController,
                   decoration: InputDecoration(labelText: 'Salário Base'),
-                  onChanged: (value) {
-                    salarioBaseController.text = value;
-                  },
                 ),
                 TextFormField(
                   controller: gratificacaoController,
@@ -338,9 +330,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
                   if (nomeController.text.isNotEmpty) {
                     dataToUpdate['nome_servidor'] = nomeController.text;
                   }
-                  if (servidor2025Controller.text != null) {
-                    dataToUpdate['servidor_2025'] = servidor2025Controller.text;
-                  }
+
                   if (secretariaController.text.isNotEmpty) {
                     dataToUpdate['secretaria'] = secretariaController.text;
                   }
@@ -437,7 +427,8 @@ class _ServidorDetailState extends State<ServidorDetail> {
                     await supabase
                         .from('vagas')
                         .update(dataToUpdate)
-                        .eq('id', widget.data['id']);
+                        .eq('id', widget.data['id'])
+                        .single();
                   } else {}
                 } catch (e) {
                   print(e);
@@ -513,8 +504,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
               final dadosServidor = snapshot.data;
               nomeController =
                   TextEditingController(text: dadosServidor!['nome_servidor']);
-              servidor2025Controller = TextEditingController(
-                  text: (dadosServidor['servidor_2025'] ?? ""));
+
               secretariaController =
                   TextEditingController(text: dadosServidor['secretaria']);
 
