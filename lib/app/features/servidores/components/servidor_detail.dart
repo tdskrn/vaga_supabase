@@ -69,39 +69,44 @@ class ServidorDetail extends StatefulWidget {
 
 class _ServidorDetailState extends State<ServidorDetail> {
   Map<String, dynamic> dadosServidor = {};
+  late final Stream<Map<String, dynamic>> _dadosStream;
+  TextEditingController nomeController = TextEditingController();
 
-  late final TextEditingController nomeController;
-
-  late final TextEditingController secretariaController;
-  late final TextEditingController lotacaoController;
-  late final TextEditingController cargoController;
-  late final TextEditingController vinculoController;
-  late final TextEditingController situacaoAtualController;
+  TextEditingController secretariaController = TextEditingController();
+  TextEditingController lotacaoController = TextEditingController();
+  TextEditingController cargoController = TextEditingController();
+  TextEditingController vinculoController = TextEditingController();
+  TextEditingController situacaoAtualController = TextEditingController();
   // referentes a benefícios
-  late final TextEditingController salarioBaseController;
-  late final TextEditingController gratificacaoController;
-  late final TextEditingController porcentagemGratificacaoController;
-  late final TextEditingController quantHorasExtrasController;
-  late final TextEditingController valorHorasController;
-  late final TextEditingController totalHorasController;
-  late final TextEditingController quantQuinqueniosController;
-  late final TextEditingController valorQuinqueniosController;
-  late final TextEditingController adicionalNoturnoController;
-  late final TextEditingController insalPericulosidadeController;
-  late final TextEditingController complEnfermagemController;
-  late final TextEditingController salarioFamiliaController;
+  TextEditingController salarioBaseController = TextEditingController();
+  TextEditingController gratificacaoController = TextEditingController();
+  TextEditingController porcentagemGratificacaoController =
+      TextEditingController();
+  TextEditingController quantHorasExtrasController = TextEditingController();
+  TextEditingController valorHorasController = TextEditingController();
+  TextEditingController totalHorasController = TextEditingController();
+  TextEditingController quantQuinqueniosController = TextEditingController();
+  TextEditingController valorQuinqueniosController = TextEditingController();
+  TextEditingController adicionalNoturnoController = TextEditingController();
+  TextEditingController insalPericulosidadeController = TextEditingController();
+  TextEditingController complEnfermagemController = TextEditingController();
+  TextEditingController salarioFamiliaController = TextEditingController();
 
-  late final TextEditingController inssController;
-  late final TextEditingController impostoRendaController;
-  late final TextEditingController sindServPublicosController;
-  late final TextEditingController totalBrutoController;
-  late final TextEditingController totalDescontosController;
-  late final TextEditingController totalLiquidoController;
+  TextEditingController inssController = TextEditingController();
+  TextEditingController impostoRendaController = TextEditingController();
+  TextEditingController sindServPublicosController = TextEditingController();
+  TextEditingController totalBrutoController = TextEditingController();
+  TextEditingController totalDescontosController = TextEditingController();
+  TextEditingController totalLiquidoController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
+    _dadosStream = supabase
+        .from('vagas')
+        .stream(primaryKey: ['id'])
+        .eq('id', widget.data['id'])
+        .map((event) => event.isNotEmpty ? event.first : {});
     // Inicializando os controladores com os valores do dadosServidor
   }
 
@@ -156,6 +161,31 @@ class _ServidorDetailState extends State<ServidorDetail> {
 
     // Caso contrário, os dados estarão disponíveis aqui
     return response;
+  }
+
+  Future<void> _updateServidor(Map<String, dynamic> dataToUpdate) async {
+    try {
+      await supabase
+          .from('vagas')
+          .update(dataToUpdate)
+          .eq('id', widget.data['id']);
+
+      // Aguarda um curto período para garantir que o trigger tenha tempo de executar
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Dados atualizados com sucesso!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao atualizar: $e')),
+        );
+      }
+    }
   }
 
   _editServidor() {
@@ -424,23 +454,12 @@ class _ServidorDetailState extends State<ServidorDetail> {
                   }
 
                   if (dataToUpdate.isNotEmpty) {
-                    await supabase
-                        .from('vagas')
-                        .update(dataToUpdate)
-                        .eq('id', widget.data['id'])
-                        .single();
+                    Navigator.pop(context); // Fecha o diálogo primeiro
+                    await _updateServidor(dataToUpdate);
                   } else {}
                 } catch (e) {
                   print(e);
                 }
-                await supabase
-                    .from('vagas')
-                    .select()
-                    .eq('id', widget.data['id']);
-
-                // Aqui você pode manipular os dados editados
-
-                Navigator.pop(context);
               },
               child: Text('Salvar'),
             ),
@@ -480,8 +499,8 @@ class _ServidorDetailState extends State<ServidorDetail> {
             )
           ],
         ),
-        body: FutureBuilder(
-            future: fetchData(),
+        body: StreamBuilder<Map<String, dynamic>>(
+            stream: _dadosStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -490,15 +509,13 @@ class _ServidorDetailState extends State<ServidorDetail> {
               } else if (snapshot.hasError) {
                 return Center(
                   child: Text(
-                    "Erro: ${snapshot.error}",
-                    style: TextStyle(
-                      color: Colors.red,
-                    ),
+                    "Erro ao carregar dados: ${snapshot.error}",
+                    style: TextStyle(color: Colors.red),
                   ),
                 );
-              } else if (!snapshot.hasData) {
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
-                  child: Text('Nenhum dado encontrado'),
+                  child: Text('Nenhum dado encontrado.'),
                 );
               }
               final dadosServidor = snapshot.data;
