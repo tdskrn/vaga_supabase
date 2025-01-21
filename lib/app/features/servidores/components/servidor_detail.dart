@@ -5,58 +5,8 @@ import 'package:vaga_supabase/app/core/config/enumVinculos.dart';
 import 'package:vaga_supabase/app/core/config/utils.dart';
 import 'package:vaga_supabase/app/core/router/app_router.dart';
 import 'package:vaga_supabase/app/core/router/theme/icon_theme.dart';
-
-Widget _highlightedText(String title, String content, Color color) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        Text(
-          content,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: color,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _cardSection(String title, List<Widget> children) {
-  return Card(
-    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-    elevation: 4,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    child: Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo,
-            ),
-          ),
-          Divider(),
-          ...children,
-        ],
-      ),
-    ),
-  );
-}
+import 'package:vaga_supabase/app/features/servidores/components/cardSectionComponent.dart';
+import 'package:vaga_supabase/app/features/servidores/components/highlightedTextComponent.dart';
 
 class ServidorDetail extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -601,51 +551,51 @@ class _ServidorDetailState extends State<ServidorDetail> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          _cardSection('Informações Básicas', [
-                            _highlightedText(
+                          cardSection('Informações Básicas', [
+                            highlightedText(
                                 'Nome do Servidor:',
                                 dadosStreamServidor!['nome_servidor'] ?? 'N/A',
                                 Colors.black),
                             dadosStreamServidor['servidor_2025'] != null
-                                ? _highlightedText(
+                                ? highlightedText(
                                     'Servidor 2025',
                                     dadosStreamServidor['servidor_2025'],
                                     Colors.black)
                                 : Container(),
-                            _highlightedText(
+                            highlightedText(
                                 'Cargo:',
                                 dadosStreamServidor['cargo'] ?? 'N/A',
                                 Colors.black),
-                            _highlightedText(
+                            highlightedText(
                                 'Secretaria:',
                                 dadosStreamServidor['secretaria'] ?? 'N/A',
                                 Colors.black),
-                            _highlightedText(
+                            highlightedText(
                                 'Lotação:',
                                 dadosStreamServidor['lotacao'] ?? 'N/A',
                                 Colors.black),
-                            _highlightedText(
+                            highlightedText(
                               "Vínculo",
                               dadosStreamServidor['vinculo'] ?? 'N/A',
                               Colors.black,
                             ),
-                            _highlightedText(
+                            highlightedText(
                               "Situação atual",
                               dadosStreamServidor['situacao_atual'] ?? 'N/A',
                               Colors.black,
                             )
                           ]),
                           dadosStreamServidor['situacao_atual'] != "DESLIGADO"
-                              ? _cardSection('Salários e Benefícios', [
+                              ? cardSection('Salários e Benefícios', [
                                   dadosStreamServidor['salario_base'] != null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Salário Base:',
                                           "R\$ ${(dadosStreamServidor['salario_base'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue)
                                       : Container(),
                                   dadosStreamServidor['valor_gratificacao'] !=
                                           null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Valor da Gratificação:',
                                           "R\$ ${(dadosStreamServidor['valor_gratificacao'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue)
@@ -656,7 +606,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
                                           dadosStreamServidor[
                                                   'porcentagem_gratificacao'] !=
                                               null)
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           "Porcentagem Gratificação",
                                           dadosStreamServidor[
                                               'porcentagem_gratificacao'],
@@ -664,7 +614,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
                                         )
                                       : Container(),
                                   dadosStreamServidor['quant_hora_extra'] != 0
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           "Quantidade de Horas Extras",
                                           "${(dadosStreamServidor['quant_hora_extra'] ?? 0).toString()}",
                                           Colors.blue,
@@ -672,21 +622,21 @@ class _ServidorDetailState extends State<ServidorDetail> {
                                       : Container(),
                                   dadosStreamServidor['valor_hora_extra'] !=
                                           null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           "Valor Hora Extra",
                                           "R\$ ${(dadosStreamServidor['valor_hora_extra'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue,
                                         )
                                       : Container(),
                                   dadosStreamServidor['total_horas'] != null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           "Total Horas",
                                           "R\$ ${(dadosStreamServidor['total_horas'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue,
                                         )
                                       : Container(),
                                   dadosStreamServidor['quant_quinquenios'] != 0
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           "Quantidade de Quinquenios",
                                           dadosStreamServidor[
                                                   'quant_quinquenios']
@@ -696,34 +646,34 @@ class _ServidorDetailState extends State<ServidorDetail> {
                                       : Container(),
                                   dadosStreamServidor['valor_quinquenios'] !=
                                           null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           "Valor Quinquênios",
                                           "R\$ ${(dadosStreamServidor['valor_quinquenios'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue,
                                         )
                                       : Container(),
                                   dadosStreamServidor['adic_noturno'] != null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Adicional Noturno:',
                                           "R\$ ${(dadosStreamServidor['adic_noturno'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue)
                                       : Container(),
                                   dadosStreamServidor['insal_periculosidade'] !=
                                           null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Insalubridade/Periculosidade:',
                                           "R\$ ${(dadosStreamServidor['insal_periculosidade'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue)
                                       : Container(),
                                   dadosStreamServidor['compl_enfermagem'] !=
                                           null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Complemento de Enfermagem:',
                                           "R\$ ${(dadosStreamServidor['compl_enfermagem'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue)
                                       : Container(),
                                   dadosStreamServidor['salario_familia'] != null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Salário Família:',
                                           "R\$ ${(dadosStreamServidor['salario_familia'] ?? 0).toStringAsFixed(2)}",
                                           Colors.blue)
@@ -731,43 +681,43 @@ class _ServidorDetailState extends State<ServidorDetail> {
                                 ])
                               : Container(),
                           dadosStreamServidor['situacao_atual'] != "DESLIGADO"
-                              ? _cardSection('Descontos', [
+                              ? cardSection('Descontos', [
                                   dadosStreamServidor['inss'] != null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'INSS:',
                                           "R\$ ${(dadosStreamServidor['inss'] ?? 0).toStringAsFixed(2)}",
                                           Colors.red)
                                       : Container(),
                                   dadosStreamServidor['imposto_renda'] != null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Imposto de Renda:',
                                           "R\$ ${(dadosStreamServidor['imposto_renda'] ?? 0).toStringAsFixed(2)}",
                                           Colors.red)
                                       : Container(),
                                   dadosStreamServidor['sind_serv_publicos'] !=
                                           null
-                                      ? _highlightedText(
+                                      ? highlightedText(
                                           'Sindicato dos Servidores Público:',
                                           "R\$ ${(dadosStreamServidor['sind_serv_publicos'] ?? 0).toStringAsFixed(2)}",
                                           Colors.red)
                                       : Container(),
-                                  _highlightedText(
+                                  highlightedText(
                                       'Total de Descontos:',
                                       "R\$ ${(dadosStreamServidor['total_descontos'] ?? 0).toStringAsFixed(2)}",
                                       Colors.red),
                                 ])
                               : Container(),
                           dadosStreamServidor['situacao_atual'] != "DESLIGADO"
-                              ? _cardSection('Resumo Financeiro', [
-                                  _highlightedText(
+                              ? cardSection('Resumo Financeiro', [
+                                  highlightedText(
                                       'Total Bruto:',
                                       "R\$ ${(dadosStreamServidor['total_bruto'] ?? 0).toStringAsFixed(2)}",
                                       Colors.blue),
-                                  _highlightedText(
+                                  highlightedText(
                                       'Total de Descontos:',
                                       "R\$ ${(dadosStreamServidor['total_descontos'] ?? 0).toStringAsFixed(2)}",
                                       Colors.red),
-                                  _highlightedText(
+                                  highlightedText(
                                       'Total Líquido:',
                                       "R\$ ${(dadosStreamServidor['total_liquido'] ?? 0).toStringAsFixed(2)}",
                                       Colors.green),
