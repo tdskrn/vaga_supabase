@@ -5,8 +5,13 @@ import 'package:vaga_supabase/app/core/config/enumVinculos.dart';
 import 'package:vaga_supabase/app/core/config/utils.dart';
 import 'package:vaga_supabase/app/core/router/app_router.dart';
 import 'package:vaga_supabase/app/core/router/theme/icon_theme.dart';
-import 'package:vaga_supabase/app/features/servidores/components/cardSectionComponent.dart';
-import 'package:vaga_supabase/app/features/servidores/components/highlightedTextComponent.dart';
+import 'package:vaga_supabase/app/features/servidores/components/servidor_detail_panel.dart';
+import 'package:vaga_supabase/app/features/servidores/components/servidores/custom_dropdowns.dart';
+import 'package:vaga_supabase/app/features/servidores/components/servidores/custom_text_fields.dart';
+import 'package:vaga_supabase/app/features/servidores/components/servidores/deduction_fields.dart';
+import 'package:vaga_supabase/app/features/servidores/components/servidores/dialog_action.dart';
+import 'package:vaga_supabase/app/features/servidores/components/servidores/financial_fields.dart';
+import 'package:vaga_supabase/app/features/servidores/components/servidores/utils/update_data_builder.dart';
 
 class ServidorDetail extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -48,6 +53,48 @@ class _ServidorDetailState extends State<ServidorDetail> {
   TextEditingController totalBrutoController = TextEditingController();
   TextEditingController totalDescontosController = TextEditingController();
   TextEditingController totalLiquidoController = TextEditingController();
+
+  void initializeControllers(Map<String, dynamic> dadosServidor) {
+    nomeController.text = dadosServidor['nome_servidor'] ?? '';
+    secretariaController.text = dadosServidor['secretaria'] ?? '';
+    lotacaoController.text = dadosServidor['lotacao'] ?? '';
+    cargoController.text = dadosServidor['cargo'] ?? '';
+    vinculoController.text = dadosServidor['vinculo'] ?? '';
+    situacaoAtualController.text = dadosServidor['situacao_atual'] ?? '';
+    salarioBaseController.text =
+        (dadosServidor['salario_base'] ?? '').toString();
+    gratificacaoController.text =
+        (dadosServidor['valor_gratificacao'] ?? '').toString();
+    porcentagemGratificacaoController.text =
+        (dadosServidor['porcentagem_gratificacao'] ?? '').toString();
+    quantHorasExtrasController.text =
+        (dadosServidor['quant_hora_extra'] ?? '').toString();
+    valorHorasController.text =
+        (dadosServidor['valor_hora_extra'] ?? '').toString();
+    totalHorasController.text = (dadosServidor['total_horas'] ?? '').toString();
+    quantQuinqueniosController.text =
+        (dadosServidor['quant_quinquenios'] ?? '').toString();
+    valorQuinqueniosController.text =
+        (dadosServidor['valor_quinquenios'] ?? '').toString();
+    adicionalNoturnoController.text =
+        (dadosServidor['adic_noturno'] ?? '').toString();
+    insalPericulosidadeController.text =
+        (dadosServidor['insal_periculosidade'] ?? '').toString();
+    complEnfermagemController.text =
+        (dadosServidor['compl_enfermagem'] ?? '').toString();
+    salarioFamiliaController.text =
+        (dadosServidor['salario_familia'] ?? '').toString();
+    inssController.text = (dadosServidor['inss'] ?? '').toString();
+    impostoRendaController.text =
+        (dadosServidor['imposto_renda'] ?? '').toString();
+    sindServPublicosController.text =
+        (dadosServidor['sind_serv_publicos'] ?? '').toString();
+    totalBrutoController.text = (dadosServidor['total_bruto'] ?? '').toString();
+    totalDescontosController.text =
+        (dadosServidor['total_descontos'] ?? '').toString();
+    totalLiquidoController.text =
+        (dadosServidor['total_liquido'] ?? '').toString();
+  }
 
   @override
   void initState() {
@@ -140,272 +187,121 @@ class _ServidorDetailState extends State<ServidorDetail> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  inputFormatters: [UpperCaseTextFormatter()],
+                buildTextFormField(
                   controller: nomeController,
-                  decoration: InputDecoration(labelText: 'Nome do Servidor'),
-                ),
-                TextFormField(
+                  labelText: 'Nome do Servidor',
                   inputFormatters: [UpperCaseTextFormatter()],
-                  controller: cargoController,
-                  decoration: InputDecoration(labelText: 'Cargo'),
                 ),
-                DropdownButtonFormField<Secretaria>(
-                  decoration: InputDecoration(labelText: "Secretária"),
+                buildTextFormField(
+                  controller: cargoController,
+                  labelText: 'Cargo',
+                  inputFormatters: [UpperCaseTextFormatter()],
+                ),
+                buildDropdown<Secretaria>(
                   value:
                       SecretariaExtension.fromString(secretariaController.text),
-                  items: Secretaria.values.map((secretaria) {
-                    return DropdownMenuItem(
-                      value: secretaria,
-                      child: Text(
-                        secretaria.name,
-                      ),
-                    );
-                  }).toList(),
+                  labelText: 'Secretária',
+                  items: Secretaria.values,
                   onChanged: (value) {
-                    secretariaController.text = value!.name;
+                    secretariaController.text = value?.name ?? '';
                   },
                 ),
-                TextFormField(
+                buildTextFormField(
                   controller: lotacaoController,
-                  decoration: InputDecoration(labelText: 'Lotação'),
+                  labelText: 'Lotação',
                 ),
-                DropdownButtonFormField<Vinculo>(
-                  decoration: InputDecoration(labelText: "Vínculo"),
+                buildDropdown<Vinculo>(
                   value: VinculoExtension.fromString(vinculoController.text),
-                  items: Vinculo.values.map((Vinculo) {
-                    return DropdownMenuItem(
-                      value: Vinculo,
-                      child: Text(
-                        Vinculo.name,
-                      ),
-                    );
-                  }).toList(),
+                  labelText: 'Vínculo',
+                  items: Vinculo.values,
                   onChanged: (value) {
-                    vinculoController.text = value!.name;
+                    vinculoController.text = value?.name ?? '';
                   },
                 ),
-                DropdownButtonFormField<SituacaoAtual>(
-                  decoration: InputDecoration(labelText: "Situação Atual"),
+                buildDropdown<SituacaoAtual>(
                   value: SituacaoAtualExtension.fromString(
                       situacaoAtualController.text),
-                  items: SituacaoAtual.values.map((SituacaoAtual) {
-                    return DropdownMenuItem(
-                      value: SituacaoAtual,
-                      child: Text(
-                        SituacaoAtual.name,
-                      ),
-                    );
-                  }).toList(),
+                  labelText: 'Situação Atual',
+                  items: SituacaoAtual.values,
                   onChanged: (value) {
-                    situacaoAtualController.text = value!.name;
+                    situacaoAtualController.text = value?.name ?? '';
                   },
                 ),
                 Divider(),
-                TextFormField(
-                  controller: salarioBaseController,
-                  decoration: InputDecoration(labelText: 'Salário Base'),
-                ),
-                TextFormField(
-                  controller: gratificacaoController,
-                  decoration: InputDecoration(labelText: 'Gratificação'),
-                ),
-                TextFormField(
-                  controller: porcentagemGratificacaoController,
-                  decoration:
-                      InputDecoration(labelText: 'Porcentagem Gratificação'),
-                ),
-                TextFormField(
-                  controller: quantHorasExtrasController,
-                  decoration:
-                      InputDecoration(labelText: 'Quantidade Horas Extras'),
-                ),
-                TextFormField(
-                  controller: valorHorasController,
-                  decoration: InputDecoration(labelText: 'Valor Hora Extra'),
-                ),
-                TextFormField(
-                  controller: totalHorasController,
-                  decoration: InputDecoration(labelText: 'Total Horas'),
-                ),
-                TextFormField(
-                  controller: quantQuinqueniosController,
-                  decoration:
-                      InputDecoration(labelText: 'Quantidade Quinquênios'),
-                ),
-                TextFormField(
-                  controller: valorQuinqueniosController,
-                  decoration: InputDecoration(labelText: 'Valor Quinquênios'),
-                ),
-                TextFormField(
-                  controller: adicionalNoturnoController,
-                  decoration: InputDecoration(labelText: 'Adicional Noturno'),
-                ),
-                TextFormField(
-                  controller: insalPericulosidadeController,
-                  decoration: InputDecoration(
-                      labelText: 'Insalubridade/Periculosidade'),
-                ),
-                TextFormField(
-                  controller: complEnfermagemController,
-                  decoration:
-                      InputDecoration(labelText: 'Complemento de Enfermagem'),
-                ),
-                TextFormField(
-                  controller: salarioFamiliaController,
-                  decoration: InputDecoration(labelText: 'Salário Família'),
+                ...buildFinancialFields(
+                  salarioBaseController: salarioBaseController,
+                  gratificacaoController: gratificacaoController,
+                  porcentagemGratificacaoController:
+                      porcentagemGratificacaoController,
+                  quantHorasExtrasController: quantHorasExtrasController,
+                  valorHorasController: valorHorasController,
+                  totalHorasController: totalHorasController,
+                  quantQuinqueniosController: quantQuinqueniosController,
+                  valorQuinqueniosController: valorQuinqueniosController,
+                  adicionalNoturnoController: adicionalNoturnoController,
+                  insalPericulosidadeController: insalPericulosidadeController,
+                  complEnfermagemController: complEnfermagemController,
+                  salarioFamiliaController: salarioFamiliaController,
                 ),
                 Divider(),
-                TextFormField(
-                  controller: inssController,
-                  decoration: InputDecoration(labelText: 'INSS'),
-                ),
-                TextFormField(
-                  controller: impostoRendaController,
-                  decoration: InputDecoration(labelText: 'Imposto de Renda'),
-                ),
-                TextFormField(
-                  controller: sindServPublicosController,
-                  decoration: InputDecoration(
-                      labelText: 'Sindicato dos Servidores Públicos'),
+                ...buildDeductionsFields(
+                  inssController: inssController,
+                  impostoRendaController: impostoRendaController,
+                  sindServPublicosController: sindServPublicosController,
                 ),
                 Divider(),
-                TextFormField(
+                buildTextFormField(
                   controller: totalBrutoController,
-                  decoration: InputDecoration(labelText: 'Total Bruto'),
+                  labelText: 'Total Bruto',
                 ),
-                TextFormField(
+                buildTextFormField(
                   controller: totalDescontosController,
-                  decoration: InputDecoration(labelText: 'Total de Descontos'),
+                  labelText: 'Total de Descontos',
                 ),
-                TextFormField(
+                buildTextFormField(
                   controller: totalLiquidoController,
-                  decoration: InputDecoration(labelText: 'Total Líquido'),
+                  labelText: 'Total Líquido',
                 ),
               ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
+          actions: buildDialogActions(
+            context: context,
+            onSave: () async {
+              final dataToUpdate = buildUpdateData(
+                nomeController: nomeController,
+                secretariaController: secretariaController,
+                lotacaoController: lotacaoController,
+                cargoController: cargoController,
+                vinculoController: vinculoController,
+                situacaoAtualController: situacaoAtualController,
+                salarioBaseController: salarioBaseController,
+                gratificacaoController: gratificacaoController,
+                porcentagemGratificacaoController:
+                    porcentagemGratificacaoController,
+                quantHorasExtrasController: quantHorasExtrasController,
+                valorHorasController: valorHorasController,
+                totalHorasController: totalHorasController,
+                quantQuinqueniosController: quantQuinqueniosController,
+                valorQuinqueniosController: valorQuinqueniosController,
+                adicionalNoturnoController: adicionalNoturnoController,
+                insalPericulosidadeController: insalPericulosidadeController,
+                complEnfermagemController: complEnfermagemController,
+                salarioFamiliaController: salarioFamiliaController,
+                inssController: inssController,
+                impostoRendaController: impostoRendaController,
+                sindServPublicosController: sindServPublicosController,
+                totalBrutoController: totalBrutoController,
+                totalDescontosController: totalDescontosController,
+                totalLiquidoController: totalLiquidoController,
+              );
+
+              if (dataToUpdate.isNotEmpty) {
                 Navigator.pop(context);
-              },
-              child: Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  // Construir dinamicamente o mapa de atualização
-                  final Map<String, dynamic> dataToUpdate = {};
-
-                  // Adicionar valors ao mapa apenas se não estiverem vazios ou nulos
-                  if (nomeController.text.isNotEmpty) {
-                    dataToUpdate['nome_servidor'] = nomeController.text;
-                  }
-
-                  if (secretariaController.text.isNotEmpty) {
-                    dataToUpdate['secretaria'] = secretariaController.text;
-                  }
-                  if (lotacaoController.text.isNotEmpty) {
-                    dataToUpdate['lotacao'] = lotacaoController.text;
-                  }
-                  if (cargoController.text.isNotEmpty) {
-                    dataToUpdate['cargo'] = cargoController.text;
-                  }
-                  if (vinculoController.text.isNotEmpty) {
-                    dataToUpdate['vinculo'] = vinculoController.text;
-                  }
-                  if (situacaoAtualController.text.isNotEmpty) {
-                    dataToUpdate['situacao_atual'] =
-                        situacaoAtualController.text;
-                  }
-
-                  if (porcentagemGratificacaoController.text.isNotEmpty) {
-                    dataToUpdate['porcentagem_gratificacao'] =
-                        porcentagemGratificacaoController.text;
-                  }
-
-                  // Converter campos numéricos somente se houver valores válidos
-                  if (salarioBaseController.text.isNotEmpty) {
-                    dataToUpdate['salario_base'] =
-                        double.tryParse(salarioBaseController.text);
-                  }
-                  if (gratificacaoController.text.isNotEmpty) {
-                    dataToUpdate['valor_gratificacao'] =
-                        double.tryParse(gratificacaoController.text);
-                  }
-
-                  if (quantHorasExtrasController.text.isNotEmpty) {
-                    dataToUpdate['quant_hora_extra'] =
-                        double.tryParse(quantHorasExtrasController.text);
-                  }
-                  if (valorHorasController.text.isNotEmpty) {
-                    dataToUpdate['valor_hora_extra'] =
-                        double.tryParse(valorHorasController.text);
-                  }
-                  if (totalHorasController.text.isNotEmpty) {
-                    dataToUpdate['total_horas'] =
-                        double.tryParse(totalHorasController.text);
-                  }
-                  if (quantQuinqueniosController.text.isNotEmpty) {
-                    dataToUpdate['quant_quinquenios'] =
-                        int.tryParse(quantQuinqueniosController.text);
-                  }
-                  if (valorQuinqueniosController.text.isNotEmpty) {
-                    dataToUpdate['valor_quinquenios'] =
-                        double.tryParse(valorQuinqueniosController.text);
-                  }
-                  if (adicionalNoturnoController.text.isNotEmpty) {
-                    dataToUpdate['adic_noturno'] =
-                        double.tryParse(adicionalNoturnoController.text);
-                  }
-                  if (insalPericulosidadeController.text.isNotEmpty) {
-                    dataToUpdate['insal_periculosidade'] =
-                        double.tryParse(insalPericulosidadeController.text);
-                  }
-                  if (complEnfermagemController.text.isNotEmpty) {
-                    dataToUpdate['compl_enfermagem'] =
-                        double.tryParse(complEnfermagemController.text);
-                  }
-                  if (salarioFamiliaController.text.isNotEmpty) {
-                    dataToUpdate['salario_familia'] =
-                        double.tryParse(salarioFamiliaController.text);
-                  }
-                  if (inssController.text.isNotEmpty) {
-                    dataToUpdate['inss'] = double.tryParse(inssController.text);
-                  }
-                  if (impostoRendaController.text.isNotEmpty) {
-                    dataToUpdate['imposto_renda'] =
-                        double.tryParse(impostoRendaController.text);
-                  }
-                  if (sindServPublicosController.text.isNotEmpty) {
-                    dataToUpdate['sind_serv_publicos'] =
-                        double.tryParse(sindServPublicosController.text);
-                  }
-                  if (totalBrutoController.text.isNotEmpty) {
-                    dataToUpdate['total_bruto'] =
-                        double.tryParse(totalBrutoController.text);
-                  }
-                  if (totalDescontosController.text.isNotEmpty) {
-                    dataToUpdate['total_descontos'] =
-                        double.tryParse(totalDescontosController.text);
-                  }
-                  if (totalLiquidoController.text.isNotEmpty) {
-                    dataToUpdate['total_liquido'] =
-                        double.tryParse(totalLiquidoController.text);
-                  }
-
-                  if (dataToUpdate.isNotEmpty) {
-                    Navigator.pop(context); // Fecha o diálogo primeiro
-                    await _updateServidor(dataToUpdate);
-                  } else {}
-                } catch (e) {
-                  print(e);
-                }
-              },
-              child: Text('Salvar'),
-            ),
-          ],
+                await _updateServidor(dataToUpdate);
+              }
+            },
+          ),
         );
       },
     );
@@ -461,61 +357,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
                 );
               }
               final dadosServidor = snapshot.data;
-              nomeController =
-                  TextEditingController(text: dadosServidor!['nome_servidor']);
-
-              secretariaController =
-                  TextEditingController(text: dadosServidor['secretaria']);
-
-              lotacaoController =
-                  TextEditingController(text: dadosServidor['lotacao']);
-              cargoController =
-                  TextEditingController(text: dadosServidor['cargo']);
-
-              vinculoController =
-                  TextEditingController(text: dadosServidor['vinculo']);
-              situacaoAtualController =
-                  TextEditingController(text: dadosServidor['situacao_atual']);
-
-              salarioBaseController = TextEditingController(
-                  text: (dadosServidor['salario_base'] ?? '').toString());
-              gratificacaoController = TextEditingController(
-                  text: (dadosServidor['valor_gratificacao'] ?? '').toString());
-              porcentagemGratificacaoController = TextEditingController(
-                  text: (dadosServidor['porcentagem_gratificacao'] ?? ''));
-              quantHorasExtrasController = TextEditingController(
-                  text: (dadosServidor['quant_hora_extra'] ?? '').toString());
-              valorHorasController = TextEditingController(
-                  text: (dadosServidor['valor_hora_extra'] ?? '').toString());
-              totalHorasController = TextEditingController(
-                  text: (dadosServidor['total_horas'] ?? '').toString());
-              quantQuinqueniosController = TextEditingController(
-                  text: (dadosServidor['quant_quinquenios'] ?? '').toString());
-              valorQuinqueniosController = TextEditingController(
-                  text: (dadosServidor['valor_quinquenios'] ?? '').toString());
-              adicionalNoturnoController = TextEditingController(
-                  text: (dadosServidor['adic_noturno'] ?? '').toString());
-              insalPericulosidadeController = TextEditingController(
-                  text:
-                      (dadosServidor['insal_periculosidade'] ?? '').toString());
-
-              complEnfermagemController = TextEditingController(
-                  text: (dadosServidor['compl_enfermagem'] ?? '').toString());
-              salarioFamiliaController = TextEditingController(
-                  text: (dadosServidor['salario_familia'] ?? '').toString());
-
-              inssController = TextEditingController(
-                  text: (dadosServidor['inss'] ?? '').toString());
-              impostoRendaController = TextEditingController(
-                  text: (dadosServidor['imposto_renda'] ?? '').toString());
-              sindServPublicosController = TextEditingController(
-                  text: (dadosServidor['sind_serv_publicos'] ?? '').toString());
-              totalBrutoController = TextEditingController(
-                  text: (dadosServidor['total_bruto'] ?? '').toString());
-              totalDescontosController = TextEditingController(
-                  text: (dadosServidor['total_descontos'] ?? '').toString());
-              totalLiquidoController = TextEditingController(
-                  text: (dadosServidor['total_liquido'] ?? '').toString());
+              initializeControllers(dadosServidor!);
 
               Stream<Map<String, dynamic>> _streamData() {
                 return supabase
@@ -547,185 +389,7 @@ class _ServidorDetailState extends State<ServidorDetail> {
 
                     final dadosStreamServidor = snapshot.data;
 
-                    return SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          cardSection('Informações Básicas', [
-                            highlightedText(
-                                'Nome do Servidor:',
-                                dadosStreamServidor!['nome_servidor'] ?? 'N/A',
-                                Colors.black),
-                            dadosStreamServidor['servidor_2025'] != null
-                                ? highlightedText(
-                                    'Servidor 2025',
-                                    dadosStreamServidor['servidor_2025'],
-                                    Colors.black)
-                                : Container(),
-                            highlightedText(
-                                'Cargo:',
-                                dadosStreamServidor['cargo'] ?? 'N/A',
-                                Colors.black),
-                            highlightedText(
-                                'Secretaria:',
-                                dadosStreamServidor['secretaria'] ?? 'N/A',
-                                Colors.black),
-                            highlightedText(
-                                'Lotação:',
-                                dadosStreamServidor['lotacao'] ?? 'N/A',
-                                Colors.black),
-                            highlightedText(
-                              "Vínculo",
-                              dadosStreamServidor['vinculo'] ?? 'N/A',
-                              Colors.black,
-                            ),
-                            highlightedText(
-                              "Situação atual",
-                              dadosStreamServidor['situacao_atual'] ?? 'N/A',
-                              Colors.black,
-                            )
-                          ]),
-                          dadosStreamServidor['situacao_atual'] != "DESLIGADO"
-                              ? cardSection('Salários e Benefícios', [
-                                  dadosStreamServidor['salario_base'] != null
-                                      ? highlightedText(
-                                          'Salário Base:',
-                                          "R\$ ${(dadosStreamServidor['salario_base'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue)
-                                      : Container(),
-                                  dadosStreamServidor['valor_gratificacao'] !=
-                                          null
-                                      ? highlightedText(
-                                          'Valor da Gratificação:',
-                                          "R\$ ${(dadosStreamServidor['valor_gratificacao'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue)
-                                      : Container(),
-                                  (dadosStreamServidor[
-                                                  'porcentagem_gratificacao'] !=
-                                              "0.00%" &&
-                                          dadosStreamServidor[
-                                                  'porcentagem_gratificacao'] !=
-                                              null)
-                                      ? highlightedText(
-                                          "Porcentagem Gratificação",
-                                          dadosStreamServidor[
-                                              'porcentagem_gratificacao'],
-                                          Colors.blue,
-                                        )
-                                      : Container(),
-                                  dadosStreamServidor['quant_hora_extra'] != 0
-                                      ? highlightedText(
-                                          "Quantidade de Horas Extras",
-                                          "${(dadosStreamServidor['quant_hora_extra'] ?? 0).toString()}",
-                                          Colors.blue,
-                                        )
-                                      : Container(),
-                                  dadosStreamServidor['valor_hora_extra'] !=
-                                          null
-                                      ? highlightedText(
-                                          "Valor Hora Extra",
-                                          "R\$ ${(dadosStreamServidor['valor_hora_extra'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue,
-                                        )
-                                      : Container(),
-                                  dadosStreamServidor['total_horas'] != null
-                                      ? highlightedText(
-                                          "Total Horas",
-                                          "R\$ ${(dadosStreamServidor['total_horas'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue,
-                                        )
-                                      : Container(),
-                                  dadosStreamServidor['quant_quinquenios'] != 0
-                                      ? highlightedText(
-                                          "Quantidade de Quinquenios",
-                                          dadosStreamServidor[
-                                                  'quant_quinquenios']
-                                              .toString(),
-                                          Colors.blue,
-                                        )
-                                      : Container(),
-                                  dadosStreamServidor['valor_quinquenios'] !=
-                                          null
-                                      ? highlightedText(
-                                          "Valor Quinquênios",
-                                          "R\$ ${(dadosStreamServidor['valor_quinquenios'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue,
-                                        )
-                                      : Container(),
-                                  dadosStreamServidor['adic_noturno'] != null
-                                      ? highlightedText(
-                                          'Adicional Noturno:',
-                                          "R\$ ${(dadosStreamServidor['adic_noturno'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue)
-                                      : Container(),
-                                  dadosStreamServidor['insal_periculosidade'] !=
-                                          null
-                                      ? highlightedText(
-                                          'Insalubridade/Periculosidade:',
-                                          "R\$ ${(dadosStreamServidor['insal_periculosidade'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue)
-                                      : Container(),
-                                  dadosStreamServidor['compl_enfermagem'] !=
-                                          null
-                                      ? highlightedText(
-                                          'Complemento de Enfermagem:',
-                                          "R\$ ${(dadosStreamServidor['compl_enfermagem'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue)
-                                      : Container(),
-                                  dadosStreamServidor['salario_familia'] != null
-                                      ? highlightedText(
-                                          'Salário Família:',
-                                          "R\$ ${(dadosStreamServidor['salario_familia'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.blue)
-                                      : Container(),
-                                ])
-                              : Container(),
-                          dadosStreamServidor['situacao_atual'] != "DESLIGADO"
-                              ? cardSection('Descontos', [
-                                  dadosStreamServidor['inss'] != null
-                                      ? highlightedText(
-                                          'INSS:',
-                                          "R\$ ${(dadosStreamServidor['inss'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.red)
-                                      : Container(),
-                                  dadosStreamServidor['imposto_renda'] != null
-                                      ? highlightedText(
-                                          'Imposto de Renda:',
-                                          "R\$ ${(dadosStreamServidor['imposto_renda'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.red)
-                                      : Container(),
-                                  dadosStreamServidor['sind_serv_publicos'] !=
-                                          null
-                                      ? highlightedText(
-                                          'Sindicato dos Servidores Público:',
-                                          "R\$ ${(dadosStreamServidor['sind_serv_publicos'] ?? 0).toStringAsFixed(2)}",
-                                          Colors.red)
-                                      : Container(),
-                                  highlightedText(
-                                      'Total de Descontos:',
-                                      "R\$ ${(dadosStreamServidor['total_descontos'] ?? 0).toStringAsFixed(2)}",
-                                      Colors.red),
-                                ])
-                              : Container(),
-                          dadosStreamServidor['situacao_atual'] != "DESLIGADO"
-                              ? cardSection('Resumo Financeiro', [
-                                  highlightedText(
-                                      'Total Bruto:',
-                                      "R\$ ${(dadosStreamServidor['total_bruto'] ?? 0).toStringAsFixed(2)}",
-                                      Colors.blue),
-                                  highlightedText(
-                                      'Total de Descontos:',
-                                      "R\$ ${(dadosStreamServidor['total_descontos'] ?? 0).toStringAsFixed(2)}",
-                                      Colors.red),
-                                  highlightedText(
-                                      'Total Líquido:',
-                                      "R\$ ${(dadosStreamServidor['total_liquido'] ?? 0).toStringAsFixed(2)}",
-                                      Colors.green),
-                                ])
-                              : Container(),
-                        ],
-                      ),
-                    );
+                    return ServidorDetailPanel(dadosStreamServidor!);
                   });
             }));
   }
